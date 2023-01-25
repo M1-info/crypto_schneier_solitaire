@@ -1,0 +1,1 @@
+# Schneier's Solitaire Algorithm
