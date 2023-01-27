@@ -1,4 +1,5 @@
 import random as random
+import unidecode as unidecode
 
 def gererate_deck():
     deck = []
@@ -22,7 +23,7 @@ def shuffle_deck(deck):
 
 def getKeys(msgSize, deck):
     keys = []
-    newDeck = deck
+    newDeck = list(deck)
     for i in range(msgSize):
         (key, newDeck) = generateKey(newDeck)
         keys.append(key)
@@ -65,29 +66,64 @@ def generateKey(deck):
 
     ## STEP 4
     numLastCard = newDeck[-1][2]
-    print(newDeck)
     nFirstCards = newDeck[:numLastCard]
     newDeck = newDeck[numLastCard:-1] + nFirstCards + [newDeck[-1]]
 
 
     ## STEP 5
     valueFirstCard = newDeck[0][2]
-    card = newDeck[valueFirstCard]
+    #print(newDeck[valueFirstCard])
+    valueCard = newDeck[valueFirstCard][2]
 
     # if card is joker, restart the process
+    if valueCard == 53:
+        return generateKey(newDeck)
+
+    valueCard = (valueCard % 26)
+    char = chr(valueCard + 65)
+
+    return char, newDeck
+
+def encrypt(msg, deck):
+    keys = getKeys(len(msg), deck)
+    print(keys)
+    encryptedMsg = ''
+    for(x,y) in zip(msg, keys):
+        intMsg = (ord(x) - 65) +1 # +1 because A = 1, B = 2, etc
+        intKey = (ord(y) - 65) +1
+        res = intMsg + intKey if intMsg + intKey <= 26 else intMsg + intKey - 26
+        encryptedMsg += chr(res -1 + 65)
+    return encryptedMsg
 
 
-    return -1, newDeck
-
-def encrypt(msg, key):
-    print('encrypt')
+def decrypt(msg, deck):
+    keys = getKeys(len(msg), deck)
+    print(keys)
+    decryptedMsg = ''
+    for (x, y) in zip(msg, keys):
+        intMsg = (ord(x) - 65) + 1  # +1 because A = 1, B = 2, etc
+        intKey = (ord(y) - 65) + 1
+        res = intMsg - intKey if intMsg - intKey > 0 else intMsg - intKey + 26
+        print('intMsg: ', intMsg, 'intKey: ', intKey, 'res: ', res)
+        decryptedMsg += chr(res - 1 + 65)
+    return decryptedMsg
 
 def main():
+    # get message from user
+    msg = input('Enter message: ')
+    msg = ''.join([c for c in msg if c.isalpha()])  # keep only letters
+    msg = unidecode.unidecode(msg)  # remove accents
+    msg = msg.upper()
+
     deck = gererate_deck()
     deck = shuffle_deck(deck)
-    #print(deck)
-    getKeys(1, deck)
-    #print(deck)
+    encryptedMsg = encrypt(msg, deck)
+    print('Encrypted message: ', encryptedMsg)
+    decryptedMsg = decrypt(encryptedMsg, deck)
+    print('Decrypted message: ', decryptedMsg)
+
+
+# abcdefghijklmnopqrstuvwxyz
 
 
 if __name__ == '__main__':
