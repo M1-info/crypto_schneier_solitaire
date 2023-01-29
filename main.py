@@ -21,18 +21,18 @@ def shuffle_deck(deck):
     return deck
 
 
-def getKeys(msgSize, deck):
+def get_keys(msgSize, deck):
     keys = []
     newDeck = list(deck)
     for i in range(msgSize):
-        (key, newDeck) = generateKey(newDeck)
+        (key, newDeck) = generate_key(newDeck)
         keys.append(key)
     return keys
 
 
 
 
-def generateKey(deck):
+def generate_key(deck):
     ## STEP 1
     indexBlackJoker = deck.index((0, 'Black', 53))
     if indexBlackJoker == 53:
@@ -77,7 +77,7 @@ def generateKey(deck):
 
     # if card is joker, restart the process
     if valueCard == 53:
-        return generateKey(newDeck)
+        return generate_key(newDeck)
 
     valueCard = (valueCard % 26)
     char = chr(valueCard + 65)
@@ -85,7 +85,7 @@ def generateKey(deck):
     return char, newDeck
 
 def encrypt(msg, deck):
-    keys = getKeys(len(msg), deck)
+    keys = get_keys(len(msg), deck)
     print(keys)
     encryptedMsg = ''
     for(x,y) in zip(msg, keys):
@@ -97,7 +97,7 @@ def encrypt(msg, deck):
 
 
 def decrypt(msg, deck):
-    keys = getKeys(len(msg), deck)
+    keys = get_keys(len(msg), deck)
     print(keys)
     decryptedMsg = ''
     for (x, y) in zip(msg, keys):
