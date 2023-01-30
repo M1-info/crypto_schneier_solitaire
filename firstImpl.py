@@ -107,7 +107,7 @@ def old_main():
     msg = msg.upper()
 
     deck = gererate_deck()
-    deck = shuffle_deck(deck)
+    shuffle_deck(deck)
     encryptedMsg = encrypt(msg, deck)
     print('Encrypted message: ', encryptedMsg)
     decryptedMsg = decrypt(encryptedMsg, deck)
@@ -116,3 +116,5 @@ def old_main():
 
 # abcdefghijklmnopqrstuvwxyz
 
+if __name__ == '__main__':
+    old_main()

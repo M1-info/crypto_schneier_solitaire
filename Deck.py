@@ -19,7 +19,12 @@ class Deck:
     def build(self):
         suits = ["Spades", "Clubs", "Diamonds", "Hearts"]
         ranks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
-        self.cards = [Card(suit, rank, id) for suit in suits for rank in ranks for id in range(1, 53)]
+        #self.cards = [Card(suit, rank, id) for suit in suits for rank in ranks]
+        id = 1
+        for suit in suits:
+            for rank in ranks:
+                self.cards.append(Card(suit, rank, id))
+                id += 1
 
         # instance new Card for jokers
         self.cards.append(Card("Red", 0, 53))
@@ -33,6 +38,7 @@ class Deck:
         return self.cards.index(card)
 
     def get_card_id_by_index(self, index):
+        #print('index : ', index)
         return self.cards[index].id
 
     def get_joker_index(self, color = "Red"):
@@ -56,6 +62,7 @@ class Deck:
         return index == len(self.cards) -1
 
     def is_joker(self, index):
+        #print('joker - index : ', index)
         return self.cards[index].rank == 0
 
     def move_last_to_front(self):

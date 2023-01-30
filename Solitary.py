@@ -42,7 +42,8 @@ class Solitary:
 
         #STEP 5
         value_first_card = deck.get_card_id_by_index(0)
-        value_card = deck.get_card_id_by_index(value_first_card)
+        #print('value_first_card :', value_first_card)
+        value_card = deck.get_card_id_by_index(value_first_card)        # problem here : id != index !!
         if deck.is_joker(value_card):
             return self.generate_key(deck)
 
