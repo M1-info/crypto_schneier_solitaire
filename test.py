@@ -1,8 +1,8 @@
 import unittest
 
-from main import generate_key
-from main import gererate_deck
-from main import shuffle_deck
+from firstImpl import generate_key
+from firstImpl import gererate_deck
+from firstImpl import shuffle_deck
 
 
 class TestDeck(unittest.TestCase):

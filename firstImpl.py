@@ -99,7 +99,7 @@ def decrypt(msg, deck):
     return decryptedMsg
 
 
-def main():
+def old_main():
     # get message from user
     msg = input('Enter message: ')
     msg = ''.join([c for c in msg if c.isalpha()])  # keep only letters
@@ -116,5 +116,3 @@ def main():
 
 # abcdefghijklmnopqrstuvwxyz
 
-if __name__ == '__main__':
-    main()
