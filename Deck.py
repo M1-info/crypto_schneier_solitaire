@@ -75,8 +75,8 @@ class Deck:
         ]
 
         # instance new Card for jokers
-        self.cards.append(Card(CardSuit.RED_JOKER, CardValue.JOKER, 53))
         self.cards.append(Card(CardSuit.BLACK_JOKER, CardValue.JOKER, 53))
+        self.cards.append(Card(CardSuit.RED_JOKER, CardValue.JOKER, 53))
 
     # shuffle the deck randomly
     def shuffle(self) -> None : 

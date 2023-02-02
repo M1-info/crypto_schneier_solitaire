@@ -109,7 +109,7 @@ class Solitary:
         crypted_msg = ''
         for (x, y) in zip(message, self.keys):
             int_msg = (ord(x) - 65) + 1  # +1 because A = 1, B = 2, etc
-            int_key = (ord(y) - 65) + 1
+            int_key = (ord(y) - 65)
             if is_encrypt:
                 res = int_msg + int_key if int_msg + int_key <= 26 else int_msg + int_key - 26
             else:
