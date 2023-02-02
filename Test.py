@@ -12,8 +12,8 @@ class TestDeck(unittest.TestCase):
     # init deck with no cards
     # should be empty
     def test_deck_init(self):
-        deck = Deck()
-        self.assertEqual(len(deck.cards), 0)
+        empty_deck = Deck()
+        self.assertEqual(len(empty_deck.cards), 0)
 
     # build deck with all cards
     # should have 54 cards
@@ -21,10 +21,12 @@ class TestDeck(unittest.TestCase):
         self.assertEqual(len(self.deck.cards), 54)
 
     # check if all cards are in the deck
-    # should have 52 cards + 2 jokers
     def test_deck_ids(self):
         for i in range(53):
-            self.assertEqual(self.deck.cards[i].id, i+1)
+            if i <= 52:
+                self.assertEqual(self.deck.cards[i].id, i+1)
+            else:
+                self.assertEqual(self.deck.cards[i].id, i)
 
     # check if joker are well initialized
     # should have 2 jokers with rank 0 and color red and black
@@ -52,22 +54,6 @@ class TestDeck(unittest.TestCase):
             self.assertTrue(0 <= self.deck.index_of_joker(CardSuit.RED_JOKER) < 54)
             self.assertTrue(0 <= self.deck.index_of_joker(CardSuit.BLACK_JOKER) < 54)
 
-    def test_is_last_card(self):
-        # test with full deck
-        self.assertTrue(self.deck.is_last_card(53))
-        self.assertFalse(self.deck.is_last_card(52))
-
-        # test with other deck containing 4 cards
-        other_deck = Deck()
-        other_deck.cards = [
-            Card(CardSuit.SPADES, CardValue.ACE, 1), 
-            Card(CardSuit.SPADES, CardValue.TWO, 2), 
-            Card(CardSuit.SPADES, CardValue.THREE, 3), 
-            Card(CardSuit.SPADES, CardValue.FOUR, 4)
-        ]
-        self.assertTrue(other_deck.is_last_card(3))
-        self.assertFalse(other_deck.is_last_card(2))
-
     def test_is_joker(self):
         # test with full deck (jokers are at the end when the deck is built and not shuffled)
         self.assertTrue(self.deck.is_joker(53))
@@ -84,25 +70,6 @@ class TestDeck(unittest.TestCase):
         self.assertTrue(other_deck.is_joker(2))
         self.assertTrue(other_deck.is_joker(1))
         self.assertFalse(other_deck.is_joker(3))
-
-    def test_move_last_to_front(self):
-        # test with full deck ( jokers are at the end when the deck is built and not shuffled )
-        # move the last card (joker) to the front
-        self.deck.move_last_to_front()
-        self.assertEqual(self.deck.cards[0].id, 54)
-        self.assertEqual(self.deck.cards[53].id, 53)
-
-        # test with other deck containing 4 cards
-        other_deck = Deck()
-        other_deck.cards = [
-            Card(CardSuit.SPADES, CardValue.ACE, 1), 
-            Card(CardSuit.SPADES, CardValue.TWO, 2), 
-            Card(CardSuit.SPADES, CardValue.THREE, 3), 
-            Card(CardSuit.SPADES, CardValue.FOUR, 4)
-        ]
-        other_deck.move_last_to_front()
-        self.assertEqual(other_deck.cards[0].id, 4)
-        self.assertEqual(other_deck.cards[3].id, 3)
 
     def test_get_sub_deck(self):
         sub_deck = self.deck.get_sub_deck(0, 12)
@@ -157,19 +124,13 @@ class TestSolitary(unittest.TestCase):
     def test_encrypt_decrypt(self):
         encrypt_deck = Deck()
         encrypt_deck.build()
-        decrypt_deck = Deck(encrypt_deck.cards)
+        decrypt_deck = Deck(encrypt_deck.cards.copy())
         solitary = Solitary()
 
         message = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         encrypted_msg = solitary.crypt(message, encrypt_deck, is_encrypt=True)
         decrypted_msg = solitary.crypt(encrypted_msg, decrypt_deck, is_encrypt=False)
         self.assertEqual(message, decrypted_msg)
-
-        # encrypted = self.solitary.crypt(message, self.deck, is_encrypt=True)
-        # #self.assertEqual(self.deck.cards, the_deck.cards)
-        # decrypted = self.solitary.crypt(encrypted, self.deck, is_encrypt=False)
-        # self.assertEqual(message, decrypted)
-
 
 
     def test_keys_without_shuffle(self):

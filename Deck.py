@@ -46,7 +46,7 @@ class Deck:
         self.cards = cards
 
     # build the deck of 54 cards (52 cards + 2 jokers)
-    def build(self):
+    def build(self) -> None :
         suits = [
             CardSuit.CLUBS,
             CardSuit.DIAMONDS,
@@ -79,34 +79,23 @@ class Deck:
         self.cards.append(Card(CardSuit.BLACK_JOKER, CardValue.JOKER, 53))
 
     # shuffle the deck randomly
-    def shuffle(self):
+    def shuffle(self) -> None : 
         random.shuffle(self.cards)
 
-    # get the index of a card
-    # card: Card object
-    def index_of(self, card: Card):
-        return self.cards.index(card)
-
     # get the joker index by color
-    # color: Red or Black
-    def index_of_joker(self, joker_color: CardSuit.BLACK_JOKER or CardSuit.RED_JOKER):
+    def index_of_joker (self, joker_color: CardSuit.BLACK_JOKER or CardSuit.RED_JOKER) -> int :
         for index, card in enumerate(self.cards):
-            print(card.suit)
             if card.suit == joker_color:
                 return index
 
-    # return True if the index is the last card in the deck
-    def is_last_card(self, index: int):
-        return index == len(self.cards) - 1
-
     # get the id of a card by index
-    def get_card_id_by_index(self, index: int):
+    def get_card_id_by_index(self, index: int) -> int :
         return self.cards[index].id
 
     # get a sub deck of cards
     # _from: index of the first card
     # _to: index of the last card
-    def get_sub_deck(self, _from: int = 0, _to: int = -1):
+    def get_sub_deck(self, _from: int = 0, _to: int = -1) -> list :
         if _to > len(self.cards) or _from > len(self.cards) or _from < 0:
             return Exception("Index out of range")
         return self.cards[_from:_to]
@@ -114,14 +103,14 @@ class Deck:
     # switch two cards by index in the deck
     # index1: index of the first card
     # index2: index of the second card
-    def switch_cards(self, index1: int, index2: int):
+    def switch_cards(self, index1: int, index2: int) -> None :
         self.cards[index1], self.cards[index2] = self.cards[index2], self.cards[index1]
 
 
     # switch two sub deck of cards
     # first_index: index of the first card (the first card of the first sub deck)
     # second_index: index of the second card (the last card of the second sub deck)
-    def switch_sub_deck(self, first_index: int, second_index: int):
+    def switch_sub_deck(self, first_index: int, second_index: int) -> None :
         first_cards = self.cards[:first_index]
         last_cards = self.cards[second_index + 1:]
         middle_cards = self.cards[first_index:second_index + 1]
@@ -129,13 +118,9 @@ class Deck:
 
     # return true if the card at the given index is a joker
     # index: index of the card (0-53)
-    def is_joker(self, index: int):
+    def is_joker(self, index: int) -> bool :
         return self.cards[index].rank == CardValue.JOKER
 
-    # move the last card to the front of the deck
-    def move_last_to_front(self):
-        self.cards.insert(0, self.cards.pop())
-
-    def print_deck(self):
+    def print_deck(self) -> None :
         for card in self.cards:
             card.print_card()

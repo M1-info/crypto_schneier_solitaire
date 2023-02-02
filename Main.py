@@ -12,12 +12,12 @@ def main():
 
     encrypt_deck = Deck()
     encrypt_deck.build()
-    #encrypt_deck.shuffle()
-    decrypt_deck = Deck(encrypt_deck.cards)
+    encrypt_deck.shuffle()
+    decrypt_deck = Deck(encrypt_deck.cards.copy())
 
     solitary = Solitary()
     encrypted_msg = solitary.crypt(msg, encrypt_deck, is_encrypt=True)
-    print('Encrypted message: ', encrypted_msg)
+    print('Message: ', msg)
 
     decrypted_msg = solitary.crypt(encrypted_msg, decrypt_deck, is_encrypt=False)
     print('Decrypted message: ', decrypted_msg)

@@ -8,12 +8,12 @@ class Solitary:
     def __init__(self):
         self.keys = []
 
-    def generate_keys(self, msgSize, deck):
+    def generate_keys(self, message_size : int, deck: Deck) -> None :
         self.keys = []
-        for _ in range(msgSize):
+        for _ in range(message_size):
             self.keys.append(self.generate_key(deck))
 
-    def generate_key(self, deck):
+    def generate_key(self, deck: Deck) -> str :
 
         ####################
         ###### STEP 1 ######
@@ -23,9 +23,9 @@ class Solitary:
 
         # if the black joker is the last card in the deck
         # move it to second place
-        if deck.is_last_card(index_black_joker):
+        if index_black_joker == len(deck.cards) - 1:
             black_joker = deck.cards.pop()
-            sub_deck = deck.get_sub_deck(1, len(deck.cards))
+            sub_deck = deck.cards[1:]
             deck.cards = [deck.cards[0]] + [black_joker] + sub_deck
         else:
             # switch the black joker with the card after it
@@ -70,8 +70,6 @@ class Solitary:
         # switch the two jokers sub-decks (the cards before the first and the cards after the second joker)
         deck.switch_sub_deck(first_joker, second_joker)
 
-
-
         # ##################
         # ##### STEP 4 #####
         # ##################
@@ -98,11 +96,14 @@ class Solitary:
 
         return char
 
-    def crypt(self, message, deck, is_encrypt=True):
+    def crypt(self, message : str, deck : Deck, is_encrypt : bool =True) -> str :
         if is_encrypt:
             message = ''.join([c for c in message if c.isalpha()])  # keep only letters
             message = unidecode(message)  # remove accents
             message = message.upper()
+
+        # if not is_encrypt:
+        #     deck.print_deck()
 
         self.generate_keys(len(message), deck)
         crypted_msg = ''
