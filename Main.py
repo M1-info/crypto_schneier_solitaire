@@ -2,6 +2,7 @@ from Deck import Deck, Card
 import unidecode as unidecode
 from Solitary import Solitary
 
+
 def main():
     # get message from user
     msg = input('Enter message: ')
@@ -19,6 +20,7 @@ def main():
     decrypted_msg = solitary.crypt(encrypted_msg, decrypt_deck, is_encrypt=False)
 
     print('Decrypted message: ', decrypted_msg)
+
 
 if __name__ == '__main__':
     main()
