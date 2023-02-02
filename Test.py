@@ -138,7 +138,21 @@ class TestSolitary(unittest.TestCase):
             self.solitary.generate_keys(i, self.deck)
             self.assertEqual(len(self.solitary.keys), i)
 
-    # TODO: test with special cases
+    def test_keys_deterministic_without_shuffle(self):
+        deck1 = Deck()
+        deck1.build()
+        self.solitary.generate_keys(10, deck1)
+        keys1 = self.solitary.keys
+        deck2 = Deck()
+        deck2.build()
+        self.solitary.generate_keys(10, deck2)
+        keys2 = self.solitary.keys
+        self.assertEqual(keys1, keys2)
+
+
+
+    #TODO: test with special cases
+
 
     def test_encrypt_decrypt(self):
         message = 'Hello World'
@@ -147,6 +161,56 @@ class TestSolitary(unittest.TestCase):
         self.assertEqual(self.deck.cards, the_deck.cards)
         decrypted = self.solitary.crypt(encrypted, self.deck, is_encrypt=False)
         self.assertEqual(message, decrypted)
+
+
+
+    def test_keys_without_shuffle(self):
+        deck1 = Deck()
+        deck1.build()
+        self.solitary.crypt('AAAA', deck1, is_encrypt=True)
+        keys1 = self.solitary.keys
+        deck2 = Deck()
+        deck2.build()
+        self.solitary.crypt('AAAA', deck2, is_encrypt=True)
+        keys2 = self.solitary.keys
+        self.assertEqual(keys1, keys2)
+        deck3 = Deck()
+        deck3.build()
+        self.solitary.crypt('DDDD', deck3, is_encrypt=True)
+        keys3 = self.solitary.keys
+        self.assertEqual(keys2, keys3)
+        deck4 = Deck()
+        deck4.build()
+        self.solitary.crypt('OUIP', deck4, is_encrypt=True)
+        keys4 = self.solitary.keys
+        self.assertEqual(keys3, keys4)
+
+
+    def test_keys_deterministic(self):
+        deck1 = Deck()
+        deck1.build()
+        deck1.shuffle()
+        self.solitary.crypt('AAAA', deck1, is_encrypt=True)
+        keys1 = self.solitary.keys
+        deck2 = Deck()
+        deck2.build()
+        deck2.shuffle()
+        self.solitary.crypt('AAAA', deck2, is_encrypt=True)
+        keys2 = self.solitary.keys
+        self.assertNotEqual(keys1, keys2)
+        deck3 = Deck()
+        deck3.build()
+        deck3.shuffle()
+        self.solitary.crypt('DDDD', deck3, is_encrypt=True)
+        keys3 = self.solitary.keys
+        self.assertNotEqual(keys2, keys3)
+        deck4 = Deck()
+        deck4.build()
+        deck4.shuffle()
+        self.solitary.crypt('OUIP', deck4, is_encrypt=True)
+        keys4 = self.solitary.keys
+        self.assertNotEqual(keys3, keys4)
+
 
     # def test_keys_generation_huge(self):
     #     message = ''

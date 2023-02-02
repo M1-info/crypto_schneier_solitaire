@@ -80,11 +80,9 @@ class Solitary:
 
         # get the value of the first card
         value_first_card = deck.get_card_id_by_index(0)
+        print('value_first_card :', value_first_card)
         value_card = deck.get_card_id_by_index(value_first_card)
-
-        [1, 2, 8, 7]
-
-        # if the value of the first card is a joker, repeat the algorithm
+        print('value_card :', value_card)
         if deck.is_joker(value_card):
             return self.generate_key(deck)
 

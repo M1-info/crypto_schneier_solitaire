@@ -5,9 +5,13 @@ import unidecode as unidecode
 def gererate_deck():
     suits = ['Clubs', 'Diamonds', 'Hearts', 'Spades'] # bridge order
     ranks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]  # with jack, queen and king
-
-    deck = [(rank, suit, id) for suit in suits for rank in ranks for id in range(1, 53)]
-
+    #deck = [(rank, suit, id) for suit in suits for rank in ranks for id in range(1, 53)]
+    id = 1
+    deck = []
+    for suit in suits:
+        for rank in ranks:
+            deck.append((rank, suit, id))
+            id += 1
     # Add joker
     deck.append((0, 'Black', 53))
     deck.append((0, 'Red', 53))
@@ -36,6 +40,7 @@ def generate_key(deck):
 
     # STEP 2
     indexRedJoker = deck.index((0, 'Red', 53))
+    #print('indexRedJoker: ', indexRedJoker)
     if indexRedJoker == 53:
         deck.insert(0, deck.pop())
         indexRedJoker = 0
@@ -76,7 +81,6 @@ def generate_key(deck):
 
 def encrypt(msg, deck):
     keys = get_keys(len(msg), deck)
-    print(keys)
     encryptedMsg = ''
     for (x, y) in zip(msg, keys):
         intMsg = (ord(x) - 65) + 1  # +1 because A = 1, B = 2, etc
@@ -88,13 +92,11 @@ def encrypt(msg, deck):
 
 def decrypt(msg, deck):
     keys = get_keys(len(msg), deck)
-    print(keys)
     decryptedMsg = ''
     for (x, y) in zip(msg, keys):
         intMsg = (ord(x) - 65) + 1  # +1 because A = 1, B = 2, etc
         intKey = (ord(y) - 65) + 1
         res = intMsg - intKey if intMsg - intKey > 0 else intMsg - intKey + 26
-        print('intMsg: ', intMsg, 'intKey: ', intKey, 'res: ', res)
         decryptedMsg += chr(res - 1 + 65)
     return decryptedMsg
 
@@ -107,7 +109,7 @@ def old_main():
     msg = msg.upper()
 
     deck = gererate_deck()
-    shuffle_deck(deck)
+    #shuffle_deck(deck) # To test the algorithm !!
     encryptedMsg = encrypt(msg, deck)
     print('Encrypted message: ', encryptedMsg)
     decryptedMsg = decrypt(encryptedMsg, deck)
