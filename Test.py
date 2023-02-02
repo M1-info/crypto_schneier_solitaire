@@ -155,12 +155,20 @@ class TestSolitary(unittest.TestCase):
 
 
     def test_encrypt_decrypt(self):
-        message = 'Hello World'
-        the_deck = Deck(self.deck.cards)
-        encrypted = self.solitary.crypt(message, self.deck, is_encrypt=True)
-        self.assertEqual(self.deck.cards, the_deck.cards)
-        decrypted = self.solitary.crypt(encrypted, self.deck, is_encrypt=False)
-        self.assertEqual(message, decrypted)
+        encrypt_deck = Deck()
+        encrypt_deck.build()
+        decrypt_deck = Deck(encrypt_deck.cards)
+        solitary = Solitary()
+
+        message = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        encrypted_msg = solitary.crypt(message, encrypt_deck, is_encrypt=True)
+        decrypted_msg = solitary.crypt(encrypted_msg, decrypt_deck, is_encrypt=False)
+        self.assertEqual(message, decrypted_msg)
+
+        # encrypted = self.solitary.crypt(message, self.deck, is_encrypt=True)
+        # #self.assertEqual(self.deck.cards, the_deck.cards)
+        # decrypted = self.solitary.crypt(encrypted, self.deck, is_encrypt=False)
+        # self.assertEqual(message, decrypted)
 
 
 

@@ -76,7 +76,7 @@ class Deck:
 
         # instance new Card for jokers
         self.cards.append(Card(CardSuit.RED_JOKER, CardValue.JOKER, 53))
-        self.cards.append(Card(CardSuit.BLACK_JOKER, CardValue.JOKER, 54))
+        self.cards.append(Card(CardSuit.BLACK_JOKER, CardValue.JOKER, 53))
 
     # shuffle the deck randomly
     def shuffle(self):
@@ -91,6 +91,7 @@ class Deck:
     # color: Red or Black
     def index_of_joker(self, joker_color: CardSuit.BLACK_JOKER or CardSuit.RED_JOKER):
         for index, card in enumerate(self.cards):
+            print(card.suit)
             if card.suit == joker_color:
                 return index
 
@@ -116,20 +117,19 @@ class Deck:
     def switch_cards(self, index1: int, index2: int):
         self.cards[index1], self.cards[index2] = self.cards[index2], self.cards[index1]
 
+
     # switch two sub deck of cards
     # first_index: index of the first card (the first card of the first sub deck)
     # second_index: index of the second card (the last card of the second sub deck)
     def switch_sub_deck(self, first_index: int, second_index: int):
         first_cards = self.cards[:first_index]
-        second_cards = self.cards[second_index+1:]
-        self.cards = first_cards + \
-            self.cards[first_index:second_index+1] + second_cards
+        last_cards = self.cards[second_index + 1:]
+        middle_cards = self.cards[first_index:second_index + 1]
+        self.cards = last_cards + middle_cards + first_cards
 
     # return true if the card at the given index is a joker
     # index: index of the card (0-53)
     def is_joker(self, index: int):
-        if index == len(self.cards):
-            return self.cards[0].rank == CardValue.JOKER
         return self.cards[index].rank == CardValue.JOKER
 
     # move the last card to the front of the deck
