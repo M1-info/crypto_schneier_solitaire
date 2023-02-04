@@ -2,6 +2,17 @@ from unidecode import unidecode
 
 from Deck import CardSuit, Deck
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 
 class Solitary:
 
@@ -14,6 +25,10 @@ class Solitary:
             self.keys.append(self.generate_key(deck))
 
     def generate_key(self, deck: Deck) -> str :
+
+        print(bcolors.OKGREEN + 'Deck before steps' + bcolors.ENDC)
+        deck.print_deck()
+        print("------------------------------------------")
 
         ####################
         ###### STEP 1 ######
@@ -31,7 +46,9 @@ class Solitary:
             # switch the black joker with the card after it
             deck.switch_cards(index_black_joker, index_black_joker + 1)
 
-
+        print(bcolors.OKGREEN + 'Deck after step 1' + bcolors.ENDC)
+        deck.print_deck()
+        print("------------------------------------------")
         ##################
         ##### STEP 2 #####
         ##################
@@ -56,7 +73,9 @@ class Solitary:
             index_red_joker += 1
             deck.switch_cards(index_red_joker, index_red_joker + 1)
 
-
+        print(bcolors.OKGREEN + 'Deck after step 2' + bcolors.ENDC)
+        deck.print_deck()
+        print("------------------------------------------")
         # ##################
         # ##### STEP 3 #####
         # ##################
@@ -69,7 +88,10 @@ class Solitary:
 
         # switch the two jokers sub-decks (the cards before the first and the cards after the second joker)
         deck.switch_sub_deck(first_joker, second_joker)
-
+        
+        print(bcolors.OKGREEN + 'Deck after step 3' + bcolors.ENDC)
+        deck.print_deck()
+        print("------------------------------------------")
         # ##################
         # ##### STEP 4 #####
         # ##################
@@ -80,7 +102,9 @@ class Solitary:
         # recreate the deck with the first n cards at the end of the deck (except the last card)
         deck.cards = deck.get_sub_deck(num_last_card, -1) + n_first_cards + [deck.cards[-1]]
 
-
+        print(bcolors.OKGREEN + 'Deck after step 4' + bcolors.ENDC)
+        deck.print_deck()
+        print("------------------------------------------")
         # ##################
         # ##### STEP 5 #####
         # ##################
@@ -88,11 +112,14 @@ class Solitary:
         # get the value of the first card
         value_first_card = deck.get_card_id_by_index(0)
         value_card = deck.get_card_id_by_index(value_first_card)
-        if deck.is_joker(value_card):
+        if deck.is_joker(value_first_card):
             return self.generate_key(deck)
 
         value_card = (value_card % 26)
         char = chr(value_card + 65)
+
+        print(bcolors.OKGREEN + 'Deck after step 5' + bcolors.ENDC)
+        print(bcolors.OKCYAN + 'Key generated: ' + char + bcolors.ENDC)
 
         return char
 
@@ -108,8 +135,8 @@ class Solitary:
         self.generate_keys(len(message), deck)
         crypted_msg = ''
         for (x, y) in zip(message, self.keys):
-            int_msg = (ord(x) - 65) +1  # +1 because A = 1, B = 2, etc
-            int_key = (ord(y) - 65) +1
+            int_msg = (ord(x) - 65) + 1  # +1 because A = 1, B = 2, etc
+            int_key = (ord(y) - 65)
             if is_encrypt:
                 res = int_msg + int_key if int_msg + int_key <= 26 else int_msg + int_key - 26
             else:
