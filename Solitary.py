@@ -2,17 +2,6 @@ from unidecode import unidecode
 
 from Deck import CardSuit, Deck
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
 class Solitary:
 
     def __init__(self):
@@ -106,15 +95,24 @@ class Solitary:
         char = chr(value_card + 65)
 
         return char
+    
+    def parse_message(self, message: str) -> str:
+        parsed_message = message
+
+        # get spaces and upper case positions
+        spaces = [i for i, c in enumerate(parsed_message) if c == ' ']
+        is_upper = [c.isupper() for c in parsed_message]
+
+        parsed_message = ''.join([c for c in parsed_message if c.isalpha()])
+        parsed_message = unidecode(parsed_message)
+        parsed_message = parsed_message.upper()
+        return [parsed_message, spaces, is_upper]
 
     def crypt(self, message: str, deck: Deck, is_encrypt: bool = True) -> str:
-        if is_encrypt:
-            # keep only letters
-            message = ''.join([c for c in message if c.isalpha()])
-            message = unidecode(message)  # remove accents
-            message = message.upper()
+        [message, spaces, uppers] = self.parse_message(message)
 
         self.generate_keys(len(message), deck)
+        
         crypted_msg = ''
         for (x, y) in zip(message, self.keys):
             int_msg = (ord(x) - 65) + 1  # +1 because A start from 1 and not 0
@@ -124,4 +122,9 @@ class Solitary:
             else:
                 res = int_msg - int_key if int_msg - int_key >= 1 else int_msg - int_key + 26
             crypted_msg += chr(res - 1 + 65)
+
+        for i in spaces:
+            crypted_msg = crypted_msg[:i] + ' ' + crypted_msg[i:]
+
+        crypted_msg = ''.join([c.upper() if uppers[i] else c.lower() for i, c in enumerate(crypted_msg)])
         return crypted_msg

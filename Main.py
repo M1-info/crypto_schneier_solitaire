@@ -1,14 +1,8 @@
 from Deck import Deck
-import unidecode as unidecode
 from Solitary import Solitary
 
-
 def main():
-    # get message from user
     msg = input('Enter message: ')
-    msg = ''.join([c for c in msg if c.isalpha()])  # keep only letters
-    msg = unidecode.unidecode(msg)  # remove accents
-    msg = msg.upper()
 
     encrypt_deck = Deck()
     encrypt_deck.build()
@@ -16,6 +10,7 @@ def main():
     decrypt_deck = Deck(encrypt_deck.cards.copy())
 
     solitary = Solitary()
+
     encrypted_msg = solitary.crypt(msg, encrypt_deck, is_encrypt=True)
     print('Encrypted message: ', encrypted_msg)
 
