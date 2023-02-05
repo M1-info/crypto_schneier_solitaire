@@ -1,6 +1,7 @@
 import random
 import itertools
-
+from art import text2art
+from utils import Logger, ChoseListConsole
 
 class CardSuit:
     SPADES = "Spades"
@@ -27,17 +28,12 @@ class CardValue:
     QUEEN = 12
     KING = 13
 
-
 class Card:
     def __init__(self, suit: CardSuit, rank: CardValue, id: int):
         self.suit = suit
         self.rank = rank
         self.id = id
         self.picture = None
-
-    def print_card(self):
-        print(self.suit, self.rank, self.id)
-
 
 class Deck:
     def __init__(self, cards=None):
@@ -120,7 +116,54 @@ class Deck:
     # index: index of the card (0-53)
     def is_joker(self, index: int) -> bool:
         return self.cards[index].rank == CardValue.JOKER
+    
+    # print the deck of cards in the console
+    def print_deck(self):
+        print("\n" + Logger.Style.bold + text2art("Deck", font="cards") + Logger.reset)
+        for i, card in enumerate(self.cards):
+            rank = str(card.rank)
+            match card.suit :
+                case CardSuit.HEARTS :
+                    print(Logger.Foreground.red + '♥' + rank + Logger.reset, end="")
+                case CardSuit.DIAMONDS :
+                    print(Logger.Foreground.red + '♦' + rank + Logger.reset, end="")
+                case CardSuit.CLUBS :
+                    print('♣' + rank + Logger.reset, end="")
+                case CardSuit.SPADES :
+                    print('♠' + rank + Logger.reset, end="")
+                case CardSuit.BLACK_JOKER :
+                    print(Logger.Foreground.black + '🃏' + Logger.reset, end="")
+                case CardSuit.RED_JOKER :
+                    print(Logger.Background.red + Logger.Foreground.red + '🃏' + Logger.reset, end="")
+            if i != len(self.cards) - 1:
+                print("|", end="")
+            else:
+                print("\n\n")
 
-    def print_deck(self) -> None:
-        for card in self.cards:
-            card.print_card()
+    # ask to the user if he want to shuffle the deck
+    def ask_to_shuffle(self):
+        message = Logger.Style.underline + "Do you want to shuffle the deck 🔀 ?" + Logger.reset
+        options = ["👍 Obviously man !", "👎 No, thanks anyway."]
+        chose = ChoseListConsole(message, options).chose()
+
+        if options[chose] == options[0]:
+            self.shuffle()
+            print("\n" + Logger.Background.lightgrey + Logger.Foreground.black + "Deck shuffled" + Logger.reset)
+            self.print_deck()
+            
+            shuffles = 0
+            while True:
+                print(Logger.separator, end="\n")
+                message = Logger.Style.underline + "Do you want to shuffle it again " + ''.join("(again) " for _ in range(shuffles))  + "?" + Logger.reset
+                options = ["Let's go 👍", "No, is enough for me. 👎"]
+                chose = ChoseListConsole(message, options).chose()
+                if options[chose] == options[0]:
+                    if shuffles == 3:
+                        print("\n" + Logger.Background.red + "You've already shuffled the deck 3 times 🥱, it's enough." + Logger.reset, end="\n")
+                        break
+                    self.shuffle()
+                    print("\n" + Logger.Background.lightgrey + Logger.Foreground.black + "Deck shuffled" + Logger.reset)
+                    self.print_deck()
+                    shuffles += 1
+                else:
+                    break
