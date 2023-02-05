@@ -13,22 +13,17 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-
 class Solitary:
 
     def __init__(self):
         self.keys = []
 
-    def generate_keys(self, message_size : int, deck: Deck) -> None :
+    def generate_keys(self, message_size: int, deck: Deck) -> None:
         self.keys = []
         for _ in range(message_size):
             self.keys.append(self.generate_key(deck))
 
-    def generate_key(self, deck: Deck) -> str :
-
-        print(bcolors.OKGREEN + 'Deck before steps' + bcolors.ENDC)
-        deck.print_deck()
-        print("------------------------------------------")
+    def generate_key(self, deck: Deck) -> str:
 
         ####################
         ###### STEP 1 ######
@@ -46,9 +41,6 @@ class Solitary:
             # switch the black joker with the card after it
             deck.switch_cards(index_black_joker, index_black_joker + 1)
 
-        print(bcolors.OKGREEN + 'Deck after step 1' + bcolors.ENDC)
-        deck.print_deck()
-        print("------------------------------------------")
         ##################
         ##### STEP 2 #####
         ##################
@@ -58,7 +50,8 @@ class Solitary:
         # if the red joker is the second to last card in the deck
         # move it to the second place
         if index_red_joker == len(deck.cards) - 2:
-            red_joker = deck.cards.pop(index_red_joker) # red_joker = pop the second to last card
+            # red_joker = pop the second to last card
+            red_joker = deck.cards.pop(index_red_joker)
             sub_deck = deck.get_sub_deck(1, len(deck.cards))
             deck.cards = [deck.cards[0]] + [red_joker] + sub_deck
         # if the red joker is the last card in the deck
@@ -66,16 +59,14 @@ class Solitary:
         elif index_red_joker == len(deck.cards) - 1:
             red_joker = deck.cards.pop()
             sub_deck = deck.get_sub_deck(2, len(deck.cards))
-            deck.cards = [deck.cards[0]] + [deck.cards[1]] + [red_joker] + sub_deck
+            deck.cards = [deck.cards[0]] + \
+                [deck.cards[1]] + [red_joker] + sub_deck
         else:
             # go back two times
             deck.switch_cards(index_red_joker, index_red_joker + 1)
             index_red_joker += 1
             deck.switch_cards(index_red_joker, index_red_joker + 1)
 
-        print(bcolors.OKGREEN + 'Deck after step 2' + bcolors.ENDC)
-        deck.print_deck()
-        print("------------------------------------------")
         # ##################
         # ##### STEP 3 #####
         # ##################
@@ -88,10 +79,7 @@ class Solitary:
 
         # switch the two jokers sub-decks (the cards before the first and the cards after the second joker)
         deck.switch_sub_deck(first_joker, second_joker)
-        
-        print(bcolors.OKGREEN + 'Deck after step 3' + bcolors.ENDC)
-        deck.print_deck()
-        print("------------------------------------------")
+
         # ##################
         # ##### STEP 4 #####
         # ##################
@@ -100,42 +88,36 @@ class Solitary:
         n_first_cards = deck.get_sub_deck(0, num_last_card)
 
         # recreate the deck with the first n cards at the end of the deck (except the last card)
-        deck.cards = deck.get_sub_deck(num_last_card, -1) + n_first_cards + [deck.cards[-1]]
+        deck.cards = deck.get_sub_deck(
+            num_last_card, -1) + n_first_cards + [deck.cards[-1]]
 
-        print(bcolors.OKGREEN + 'Deck after step 4' + bcolors.ENDC)
-        deck.print_deck()
-        print("------------------------------------------")
         # ##################
         # ##### STEP 5 #####
         # ##################
 
         # get the value of the first card
         value_first_card = deck.get_card_id_by_index(0)
-        value_card = deck.get_card_id_by_index(value_first_card)
+
         if deck.is_joker(value_first_card):
             return self.generate_key(deck)
 
+        value_card = deck.get_card_id_by_index(value_first_card)
         value_card = (value_card % 26)
         char = chr(value_card + 65)
 
-        print(bcolors.OKGREEN + 'Deck after step 5' + bcolors.ENDC)
-        print(bcolors.OKCYAN + 'Key generated: ' + char + bcolors.ENDC)
-
         return char
 
-    def crypt(self, message : str, deck : Deck, is_encrypt : bool =True) -> str :
+    def crypt(self, message: str, deck: Deck, is_encrypt: bool = True) -> str:
         if is_encrypt:
-            message = ''.join([c for c in message if c.isalpha()])  # keep only letters
+            # keep only letters
+            message = ''.join([c for c in message if c.isalpha()])
             message = unidecode(message)  # remove accents
             message = message.upper()
-
-        # if not is_encrypt:
-        #     deck.print_deck()
 
         self.generate_keys(len(message), deck)
         crypted_msg = ''
         for (x, y) in zip(message, self.keys):
-            int_msg = (ord(x) - 65) + 1  # +1 because A = 1, B = 2, etc
+            int_msg = (ord(x) - 65) + 1  # +1 because A start from 1 and not 0
             int_key = (ord(y) - 65)
             if is_encrypt:
                 res = int_msg + int_key if int_msg + int_key <= 26 else int_msg + int_key - 26

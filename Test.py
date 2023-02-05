@@ -51,8 +51,10 @@ class TestDeck(unittest.TestCase):
     def test_joker_id(self):
         for i in range(10):
             self.deck.shuffle()
-            self.assertTrue(0 <= self.deck.index_of_joker(CardSuit.RED_JOKER) < 54)
-            self.assertTrue(0 <= self.deck.index_of_joker(CardSuit.BLACK_JOKER) < 54)
+            self.assertTrue(0 <= self.deck.index_of_joker(
+                CardSuit.RED_JOKER) < 54)
+            self.assertTrue(0 <= self.deck.index_of_joker(
+                CardSuit.BLACK_JOKER) < 54)
 
     def test_is_joker(self):
         # test with full deck (jokers are at the end when the deck is built and not shuffled)
@@ -62,9 +64,9 @@ class TestDeck(unittest.TestCase):
 
         other_deck = Deck()
         other_deck.cards = [
-            Card(CardSuit.SPADES, CardValue.ACE, 1), 
-            Card(CardSuit.RED_JOKER, CardValue.JOKER, 2), 
-            Card(CardSuit.BLACK_JOKER, CardValue.JOKER, 3), 
+            Card(CardSuit.SPADES, CardValue.ACE, 1),
+            Card(CardSuit.RED_JOKER, CardValue.JOKER, 2),
+            Card(CardSuit.BLACK_JOKER, CardValue.JOKER, 3),
             Card(CardSuit.SPADES, CardValue.FOUR, 4)
         ]
         self.assertTrue(other_deck.is_joker(2))
@@ -166,40 +168,48 @@ class TestSolitary(unittest.TestCase):
         keys4 = self.solitary.keys
         self.assertNotEqual(keys3, keys4)
 
-
     # test if decrypted crypted alphabet is the same as the original alphabet
+
     def test_encrypt_decrypt_alphabet(self):
         message = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        encrypted_msg = self.solitary.crypt(message, self.encrypt_deck, is_encrypt=True)
-        decrypted_msg = self.solitary.crypt(encrypted_msg, self.decrypt_deck, is_encrypt=False)
+        encrypted_msg = self.solitary.crypt(
+            message, self.encrypt_deck, is_encrypt=True)
+        decrypted_msg = self.solitary.crypt(
+            encrypted_msg, self.decrypt_deck, is_encrypt=False)
         self.assertEqual(message, decrypted_msg)
 
     # test if decrypted message is the same as the original message
     def test_encrypt_decrypt_(self):
         message = 'Hello World !'
         message_wanted = 'HELLOWORLD'
-        encrypted_msg = self.solitary.crypt(message, self.encrypt_deck, is_encrypt=True)
-        decrypted_msg = self.solitary.crypt(encrypted_msg, self.decrypt_deck, is_encrypt=False)
+        encrypted_msg = self.solitary.crypt(
+            message, self.encrypt_deck, is_encrypt=True)
+        decrypted_msg = self.solitary.crypt(
+            encrypted_msg, self.decrypt_deck, is_encrypt=False)
         self.assertEqual(message_wanted, decrypted_msg)
 
     # same test as above but with special characters and space
     def test_encrypt_decrypt_with_special_characters(self):
         message = 'A    BCDEF GHIJKLMN OPQRS TUVWX YZ !@#$%^&*()_+ 1234567890-=[]\{}|;:,./<>?'
         message_wanted = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        encrypted_msg = self.solitary.crypt(message, self.encrypt_deck, is_encrypt=True)
-        decrypted_msg = self.solitary.crypt(encrypted_msg, self.decrypt_deck, is_encrypt=False)
+        encrypted_msg = self.solitary.crypt(
+            message, self.encrypt_deck, is_encrypt=True)
+        decrypted_msg = self.solitary.crypt(
+            encrypted_msg, self.decrypt_deck, is_encrypt=False)
         self.assertEqual(message_wanted, decrypted_msg)
 
     # same test as above but with accents
     def test_encrypt_decrypt_with_accents(self):
         message = 'éèàçù'
         message_wanted = 'EEACU'
-        encrypted_msg = self.solitary.crypt(message, self.encrypt_deck, is_encrypt=True)
-        decrypted_msg = self.solitary.crypt(encrypted_msg, self.decrypt_deck, is_encrypt=False)
+        encrypted_msg = self.solitary.crypt(
+            message, self.encrypt_deck, is_encrypt=True)
+        decrypted_msg = self.solitary.crypt(
+            encrypted_msg, self.decrypt_deck, is_encrypt=False)
         self.assertEqual(message_wanted, decrypted_msg)
 
-
     # big test with multiple messages
+
     def test_cipher(self):
         messages = [
             ('Bonjour', 'BONJOUR'),
@@ -208,8 +218,10 @@ class TestSolitary(unittest.TestCase):
             ('étérogènité.', 'ETEROGENITE'),
         ]
         for message, message_wanted in messages:
-            encrypted_msg = self.solitary.crypt(message, self.encrypt_deck, is_encrypt=True)
-            decrypted_msg = self.solitary.crypt(encrypted_msg, self.decrypt_deck, is_encrypt=False)
+            encrypted_msg = self.solitary.crypt(
+                message, self.encrypt_deck, is_encrypt=True)
+            decrypted_msg = self.solitary.crypt(
+                encrypted_msg, self.decrypt_deck, is_encrypt=False)
             self.assertEqual(message_wanted, decrypted_msg)
 
 
