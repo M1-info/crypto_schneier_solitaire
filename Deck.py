@@ -2,6 +2,7 @@ import random
 import itertools
 from art import text2art
 from utils import Logger, ChoseListConsole
+import json
 
 class CardSuit:
     SPADES = "Spades"
@@ -34,6 +35,13 @@ class Card:
         self.rank = rank
         self.id = id
         self.picture = None
+    
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__)
+    
+    @staticmethod
+    def fromJSON(string: str):
+        return json.loads(string, object_hook=lambda d: Card(d['suit'], d['rank'], d['id']))
 
 class Deck:
     def __init__(self, cards=None):
@@ -167,3 +175,13 @@ class Deck:
                     shuffles += 1
                 else:
                     break
+
+    def serialize(self) -> dict:
+        return {
+            "cards": [card.toJSON() for card in self.cards]
+        }
+    
+    @classmethod
+    def deserialize(self, data) -> 'Deck':
+        self.cards = [Card.fromJSON(card) for card in data["cards"]]
+        return self

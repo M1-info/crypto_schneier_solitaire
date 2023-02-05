@@ -1,5 +1,6 @@
 import sys, tty, termios
 from art import text2art
+from time import sleep
 
 
 class ChoseListConsole:
@@ -125,3 +126,19 @@ class Logger:
 Encryption''') -> None:
         title = text2art(title)
         print(Logger.Style.bold + title + Logger.reset, end="\n\n")
+
+    @staticmethod
+    def wait_animation(delay: int = 0.5) -> None:
+        message = Logger.Style.bold + Logger.Foreground.yellow + "\nWaiting for data" + Logger.reset
+        print(end=message)
+        n_dots = 0
+        while True:
+            if n_dots == 3:
+                print(end='\b\b\b', flush=True)
+                print(end='   ',    flush=True)
+                print(end='\b\b\b', flush=True)
+                n_dots = 0
+            else:
+                print(end='.', flush=True)
+                n_dots += 1
+            sleep(delay)
