@@ -1,8 +1,9 @@
 import random
 import itertools
-from art import text2art
 from utils import Logger, ChoseListConsole
 import json
+from art import text2art
+
 
 class CardSuit:
     SPADES = "Spades"
@@ -130,19 +131,20 @@ class Deck:
         print("\n" + Logger.Style.bold + text2art("Deck", font="cards") + Logger.reset)
         for i, card in enumerate(self.cards):
             rank = str(card.rank)
-            match card.suit :
-                case CardSuit.HEARTS :
-                    print(Logger.Foreground.red + '♥' + rank + Logger.reset, end="")
-                case CardSuit.DIAMONDS :
-                    print(Logger.Foreground.red + '♦' + rank + Logger.reset, end="")
-                case CardSuit.CLUBS :
-                    print('♣' + rank + Logger.reset, end="")
-                case CardSuit.SPADES :
-                    print('♠' + rank + Logger.reset, end="")
-                case CardSuit.BLACK_JOKER :
-                    print(Logger.Foreground.black + '🃏' + Logger.reset, end="")
-                case CardSuit.RED_JOKER :
-                    print(Logger.Background.red + Logger.Foreground.red + '🃏' + Logger.reset, end="")
+
+            if card.suit == CardSuit.HEARTS :
+                print(Logger.Foreground.red + '♥' + rank + Logger.reset, end="")
+            elif card.suit == CardSuit.DIAMONDS :
+                print(Logger.Foreground.red + '♦' + rank + Logger.reset, end="")
+            elif card.suit == CardSuit.CLUBS :
+                print('♣' + rank + Logger.reset, end="")
+            elif card.suit == CardSuit.SPADES :
+                print('♠' + rank + Logger.reset, end="")
+            elif card.suit == CardSuit.BLACK_JOKER :
+                print(Logger.Foreground.black + '🃏' + Logger.reset, end="")
+            elif card.suit == CardSuit.RED_JOKER :
+                print(Logger.Background.red + Logger.Foreground.red + '🃏' + Logger.reset, end="")
+            
             if i != len(self.cards) - 1:
                 print("|", end="")
             else:

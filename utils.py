@@ -1,13 +1,19 @@
-import sys, tty, termios
-from art import text2art
+import sys
+import pip
 from time import sleep
+from art import text2art
+    
+if sys.version_info[0] > 2:
+    from msvcrt import getwch as getch
+else:
+    from msvcrt import getch
 
 
 class ChoseListConsole:
 
     class KeysCode:
-        UP = "[A"
-        DOWN = "[B"
+        UP = "H"
+        DOWN = "P"
         SELECT = "\r"
         QUIT = "\x03"
 
@@ -23,27 +29,17 @@ class ChoseListConsole:
         self.selected = 0
 
     def get_key(self) -> Keys:
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
-        try:
-            tty.setraw(fd)
-            ch = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        match ch :
-            case "\x1b" :
-                ch = sys.stdin.read(2)
-                match ch :
-                    case self.KeysCode.UP :
-                        return self.Keys.UP
-                    case self.KeysCode.DOWN :
-                        return self.Keys.DOWN
-            case self.KeysCode.SELECT :
-                return self.Keys.SELECT
-            case self.KeysCode.QUIT :
-                return self.Keys.QUIT
-            case _ :
-                return None
+        ch = getch()
+        if ch == self.KeysCode.UP :
+            return self.Keys.UP
+        elif ch == self.KeysCode.DOWN :
+            return self.Keys.DOWN
+        elif ch == self.KeysCode.SELECT :
+            return self.Keys.SELECT
+        elif ch == self.KeysCode.QUIT :
+            return self.Keys.QUIT
+        else :
+            return None
     
 
     def print(self):
@@ -59,17 +55,16 @@ class ChoseListConsole:
         self.print()
         while True:
             key = self.get_key()
-            match key :
-                case self.Keys.UP :
-                    self.selected = (self.selected - 1) % len(self.options)
-                case self.Keys.DOWN :
-                    self.selected = (self.selected + 1) % len(self.options)
-                case self.Keys.SELECT :
-                    return self.selected
-                case self.Keys.QUIT :
-                    sys.exit(0)
-                case _ :
-                    pass
+            if key == self.Keys.UP :
+                self.selected = (self.selected - 1) % len(self.options)
+            elif key == self.Keys.DOWN :
+                self.selected = (self.selected + 1) % len(self.options)
+            elif key == self.Keys.SELECT :
+                return self.selected
+            elif key == self.Keys.QUIT :
+                sys.exit(0)
+            else :
+                pass
             
             for i in range(len(self.options)):
                 # clear the old list
@@ -142,3 +137,16 @@ Encryption''') -> None:
                 print(end='.', flush=True)
                 n_dots += 1
             sleep(delay)
+
+    @staticmethod
+    def missing_module(module: str) -> None:
+        print(Logger.Style.bold + Logger.Foreground.red + f"'{module}' module not found !" + Logger.reset)
+        chose = ChoseListConsole(["Yes", "No"], "We can install the art module for you, do you agree ? ").chose()
+        if chose == 0:
+            print(Logger.Style.bold + Logger.Foreground.yellow + f"Installing '{module}' module..." + Logger.reset)
+            pip.main(['install', module])
+            from art import text2art
+        else :
+            print(Logger.Style.bold + Logger.Foreground.red + f"'{module}' module is required to run this program, exiting..." + Logger.reset)
+            print(Logger.Style.bold + Logger.Foreground.red + "You can install it by running 'pip install art'" + Logger.reset)
+            sys.exit(0)
