@@ -4,14 +4,30 @@ This is a Python implementation of Bruce Schneier's Solitaire algorithm, as desc
 
 ## Usage 🚀
 
+This projet work with sockets, so you need to run two programs, one for the crypter and one for the decrypter.
+You can run the programs on the same computer or on two different computers (in this case, you need to change the IP address in the code).
+This program have some dependencies, so you need to install them before running the program.
+
+### Dependencies 📦
+
+- [Python 3](https://www.python.org/downloads/)
+- [unidecode](https://pypi.org/project/Unidecode/)
+- [art](https://pypi.org/project/art/) (optional, only if you want to see the console version of the program)
+
+### Commands 🖥️
+
 ```bash
-$ python3 ./Main.py
+$ pip install unidecode
+$ pip install art
+$ python3 decrypter.py
+$ python3 crypter.py
 ```
 
 ## Description 📝
 
 The algorithm is based on a deck of 52 cards. The cards are numbered from 1 to 52, with 1 being the Ace of Spades, 2 being the 2 of Spades, and so on. The deck is used to generate a keystream, which is then used to encrypt or decrypt a message.
 The same deck is used for both encryption and decryption.
+The deck is created in the crypter program, and the deck is sent to the decrypter program to decrypt the message.
 
 &nbsp;
 
