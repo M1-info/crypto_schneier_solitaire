@@ -102,7 +102,7 @@ class Solitary:
 
         return char
     
-    def parse_message(self, message: str) -> str:
+    def parse_message(self, message: str) -> list:
         parsed_message = message
 
         # get spaces and upper case positions
