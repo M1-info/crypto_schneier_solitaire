@@ -1,20 +1,35 @@
 import multiprocessing
 import socket
 import json
+import signal
 
 from Deck import Deck
 from Solitary import Solitary
 from utils import Logger
 
+try:
+    from art import text2art
+except ImportError:
+    Logger.missing_module("art")
+    from art import text2art
+
 HOST = "127.0.0.1" 
 PORT = 65432
 
 def main():
-    Logger.make_title('''Solitary 
-Decryption''')
+    title = '''Solitaire
+Encryption'''
+    title = text2art(title)
+    Logger.make_title(title)
 
     process = multiprocessing.Process(target=Logger.wait_animation)
     process.start()
+
+    def handler(signum, frame):
+        process.terminate()
+
+    # terminate process if the user press Ctrl+C
+    signal.signal(signal.SIGINT, handler)
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.bind((HOST, PORT))
@@ -25,7 +40,6 @@ Decryption''')
             deck = None
             received_count = 0
             while True:
-                
                 # receive the encrypted message and the deck
                 data = connection.recv(4000)
                 # decrypt the message

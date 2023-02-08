@@ -4,12 +4,23 @@ from Deck import Deck
 from utils import Logger
 import json
 
+try:
+    from art import text2art
+except ImportError:
+    Logger.missing_module("art")
+    from art import text2art
+    
+
+
 HOST = "127.0.0.1"  # The server's hostname or IP address
 PORT = 65432  # The port used by the server
 
 def main():
 
-    Logger.make_title()
+    title = '''Solitaire
+Encryption'''
+    title = text2art(title)
+    Logger.make_title(title)
 
     encrypt_deck = Deck()
     encrypt_deck.build()

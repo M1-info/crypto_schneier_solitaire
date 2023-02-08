@@ -1,4 +1,10 @@
-from unidecode import unidecode
+from utils import Logger
+
+try:
+    from unidecode import unidecode
+except ImportError:
+    Logger.missing_module("unidecode")
+    from unidecode import unidecode
 
 from Deck import CardSuit, Deck
 

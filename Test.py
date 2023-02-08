@@ -3,7 +3,6 @@ import unittest
 from Deck import Deck, Card, CardSuit, CardValue
 from Solitary import Solitary
 
-
 class TestDeck(unittest.TestCase):
     def setUp(self):
         self.deck = Deck()

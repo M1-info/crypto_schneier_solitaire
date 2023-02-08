@@ -12,15 +12,15 @@ This program have some dependencies, so you need to install them before running 
 
 - [Python 3](https://www.python.org/downloads/)
 - [unidecode](https://pypi.org/project/Unidecode/)
-- [art](https://pypi.org/project/art/) (optional, only if you want to see the console version of the program)
+- [art](https://pypi.org/project/art/)
 
 ### Commands 🖥️
 
 ```bash
 $ pip install unidecode
 $ pip install art
-$ python3 decrypter.py
-$ python3 crypter.py
+$ python3 DecrypterClient.py
+$ python3 EncrypterClient.py
 ```
 
 ## Description 📝

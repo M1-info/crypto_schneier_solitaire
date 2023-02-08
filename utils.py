@@ -1,8 +1,7 @@
 import sys
 import pip
 from time import sleep
-from art import text2art
-    
+
 if sys.version_info[0] > 2:
     from msvcrt import getwch as getch
 else:
@@ -115,9 +114,7 @@ class Logger:
         white = '\033[107m'
 
     @staticmethod
-    def make_title(title: str = '''Solitary
-Encryption''') -> None:
-        title = text2art(title)
+    def make_title(title: str) -> None:
         print(Logger.Style.bold + title + Logger.reset, end="\n\n")
 
     @staticmethod
@@ -139,12 +136,11 @@ Encryption''') -> None:
     @staticmethod
     def missing_module(module: str) -> None:
         print(Logger.Style.bold + Logger.Foreground.red + f"'{module}' module not found !" + Logger.reset)
-        chose = ChoseListConsole(["Yes", "No"], "We can install the art module for you, do you agree ? ").chose()
+        chose = ChoseListConsole(f"We can install the '{module}' module for you, do you agree ? ", ["   Yes", "   No"]).chose()
         if chose == 0:
             print(Logger.Style.bold + Logger.Foreground.yellow + f"Installing '{module}' module..." + Logger.reset)
             pip.main(['install', module])
-            from art import text2art
         else :
             print(Logger.Style.bold + Logger.Foreground.red + f"'{module}' module is required to run this program, exiting..." + Logger.reset)
-            print(Logger.Style.bold + Logger.Foreground.red + "You can install it by running 'pip install art'" + Logger.reset)
+            print(Logger.Style.bold + Logger.Foreground.red + f"You can install it by running 'pip install {module}'" + Logger.reset)
             sys.exit(0)

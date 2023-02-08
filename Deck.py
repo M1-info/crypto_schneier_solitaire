@@ -2,7 +2,20 @@ import random
 import itertools
 from utils import Logger, ChoseListConsole
 import json
-from art import text2art
+
+from utils import Logger
+
+try:
+    from unidecode import unidecode
+except ImportError:
+    Logger.missing_module("unidecode")
+    from unidecode import unidecode
+
+try:
+    from art import text2art
+except ImportError:
+    Logger.missing_module("art")
+    from art import text2art
 
 
 class CardSuit:
