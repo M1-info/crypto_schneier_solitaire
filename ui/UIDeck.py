@@ -10,15 +10,16 @@ class UIDeck :
 
         # Create the canvas
         self.canvas = Canvas(parent, width=600, height=600)
-        self.canvas.grid(row=2, column=1)
+
+        self.shuffle_button = Button(self.canvas, text="Shuffle deck", command=self.shuffle)
+        self.shuffle_button.grid(row=1, column=1)
+
         self.cards = self.init_cards()
 
-        self.button = Button(parent, text="Shuffle", command=self.shuffle)
-        self.button.grid(row=6, column=1)
 
     def init_cards(self):
         cards = []
-        row = 1
+        row = 2
         column = 1
         for card in self.deck.cards:
             ui_card = UICard(card, parent=self.canvas)

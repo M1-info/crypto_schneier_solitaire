@@ -3,7 +3,7 @@ from tkinter import Misc, Canvas, PhotoImage
 from PIL import Image, ImageTk
 from cipher.Card import Card, CardSuit, CardValue
 
-IMAGE_SIZE = (88, 115)
+IMAGE_SIZE = (77, 100)
 
 class UICard:
 
