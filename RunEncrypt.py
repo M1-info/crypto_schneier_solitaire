@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.ttk as ttk
 from cipher.Deck import Deck
 from ui.UIDeck import UIDeck
 
@@ -9,11 +10,11 @@ def main():
     root.title("Run Encrypt")
 
     # Create the main frame
-    frame = tk.Frame(root)
+    frame = ttk.Frame(root, padding=30)
     frame.grid(row=2, column=1)
 
     # Create the title
-    title = tk.Label(frame, text="Run Encrypt", font=("Helvetica", 24)).grid(row=1, column=1)
+    title = ttk.Label(frame, text="Run Encrypt", font=("Helvetica", 24)).grid(row=1, column=1)
 
     # Create the deck view
     deck = Deck()

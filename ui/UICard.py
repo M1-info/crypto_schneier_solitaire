@@ -3,7 +3,7 @@ from tkinter import Misc, Canvas, PhotoImage
 from PIL import Image, ImageTk
 from cipher.Card import Card, CardSuit, CardValue
 
-IMAGE_SIZE = (100, 150)
+IMAGE_SIZE = (88, 115)
 
 class UICard:
 
@@ -11,12 +11,13 @@ class UICard:
         self.card = card
 
         # Create the canvas
-        self.canvas = Canvas(parent, width=IMAGE_SIZE[0], height=IMAGE_SIZE[1])
+        self.canvas = Canvas(parent, width=IMAGE_SIZE[0] + 1, height=IMAGE_SIZE[1] + 1)
 
         # Create the image
         links = self.get_card_links()
         self.image_normal = Image.open(fp=links[0])
         self.image_normal = self.resize_image(self.image_normal)
+
 
         self.image_hover = Image.open(fp=links[1])
         self.image_hover = self.resize_image(self.image_hover)
@@ -24,7 +25,7 @@ class UICard:
         self.tk_image_normal = ImageTk.PhotoImage(self.image_normal)
         self.tk_image_hover = ImageTk.PhotoImage(self.image_hover)
 
-        self.object_image = self.canvas.create_image(0, 0, image=self.tk_image_normal, anchor="nw")
+        self.object_image = self.canvas.create_image(2, 2, image=self.tk_image_normal, anchor="nw")
         self.canvas.bind("<Enter>", self.on_enter)
         self.canvas.bind("<Leave>", self.on_leave)
 

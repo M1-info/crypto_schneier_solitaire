@@ -1,5 +1,5 @@
 from typing import Optional
-from tkinter import Misc, Canvas
+from tkinter import Misc, Canvas, Button
 from cipher.Deck import Deck
 from .UICard import UICard
 
@@ -12,6 +12,9 @@ class UIDeck :
         self.canvas = Canvas(parent, width=600, height=600)
         self.canvas.grid(row=2, column=1)
         self.cards = self.init_cards()
+
+        self.button = Button(parent, text="Shuffle", command=self.shuffle)
+        self.button.grid(row=6, column=1)
 
     def init_cards(self):
         cards = []
@@ -27,3 +30,14 @@ class UIDeck :
                 column = 0
 
             column += 1
+
+        return cards
+
+    def shuffle(self):
+        self.deck.shuffle_deck()
+        self.redraw()
+    
+    def redraw(self):
+        for card in self.cards:
+            card.canvas.destroy()
+        self.cards = self.init_cards()
