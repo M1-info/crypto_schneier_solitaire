@@ -22,7 +22,7 @@ def main():
     deck = Deck()
     deck.build()
     deck_ui = UIDeck(deck, container)
-    deck_ui.canvas.grid(row=2, column=1)
+    deck_ui.canvas.grid(row=2, column=1, pady=30)
 
     # Create the solitary view
     solitary_ui = UISolitary(deck_ui, container)

@@ -23,9 +23,9 @@ $ python crypter.py
 
 ## Description 📝
 
-The algorithm is based on a deck of 52 cards. The cards are numbered from 1 to 52, with 1 being the Ace of Spades, 2 being the 2 of Spades, and so on. The deck is used to generate a keystream, which is then used to encrypt or decrypt a message.
+The algorithm is based on a deck of 54 cards (Bridge cards). The cards are numbered from 1 to 54, with 1 being the Ace of Spades, 2 being the 2 of Spades, and so on. A red and a black joker is present. The deck is used to generate a keystream, which is then used to encrypt or decrypt a message.
 The same deck is used for both encryption and decryption.
-The deck is created in the crypter program, and the deck is sent to the decrypter program to decrypt the message.
+It is created in the crypter program, and sent to the decrypter program to decrypt the message.
 
 &nbsp;
 
