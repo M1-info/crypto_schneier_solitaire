@@ -1,12 +1,7 @@
-from utils import Logger
+from unidecode import unidecode
 
-try:
-    from unidecode import unidecode
-except ImportError:
-    Logger.missing_module("unidecode")
-    from unidecode import unidecode
-
-from Deck import CardSuit, Deck
+from .Deck import Deck
+from .Card import CardSuit
 
 class Solitary:
 

@@ -1,7 +1,8 @@
 import unittest
 
-from Deck import Deck, Card, CardSuit, CardValue
-from Solitary import Solitary
+from cipher.Deck import Deck
+from cipher.Card import Card, CardSuit, CardValue
+from cipher.Solitary import Solitary
 
 class TestDeck(unittest.TestCase):
     def setUp(self):
@@ -36,12 +37,12 @@ class TestDeck(unittest.TestCase):
         self.assertEqual(self.deck.cards[52].rank, CardValue.JOKER)
         self.assertEqual(self.deck.cards[52].suit, CardSuit.BLACK_JOKER)
 
-    # check if shuffle is working
-    # should not be the same deck after shuffle
+    # check if shuffle_deck is working
+    # should not be the same deck after shuffle_deck
     # should have 54 cards
     def test_shuffle(self):
         new_deck = Deck(self.deck.cards)
-        new_deck.shuffle()
+        new_deck.shuffle_deck()
         self.assertNotEqual(new_deck, self.deck)
         self.assertEqual(len(new_deck.cards), 54)
 
@@ -49,7 +50,7 @@ class TestDeck(unittest.TestCase):
     # should return the index of the joker and it will be contained in the range 1-54
     def test_joker_id(self):
         for i in range(10):
-            self.deck.shuffle()
+            self.deck.shuffle_deck()
             self.assertTrue(0 <= self.deck.index_of_joker(
                 CardSuit.RED_JOKER) < 54)
             self.assertTrue(0 <= self.deck.index_of_joker(
@@ -98,7 +99,7 @@ class TestSolitary(unittest.TestCase):
     def setUp(self):
         self.encrypt_deck = Deck()
         self.encrypt_deck.build()
-        self.encrypt_deck.shuffle()
+        self.encrypt_deck.shuffle_deck()
         self.decrypt_deck = Deck(self.encrypt_deck.cards.copy())
         self.solitary = Solitary()
 
@@ -154,24 +155,24 @@ class TestSolitary(unittest.TestCase):
     def test_keys_deterministic(self):
         deck1 = Deck()
         deck1.build()
-        deck1.shuffle()
+        deck1.shuffle_deck()
         self.solitary.crypt('AAAA', deck1, is_encrypt=True)
         keys1 = self.solitary.keys
         deck2 = Deck()
         deck2.build()
-        deck2.shuffle()
+        deck2.shuffle_deck()
         self.solitary.crypt('AAAA', deck2, is_encrypt=True)
         keys2 = self.solitary.keys
         self.assertNotEqual(keys1, keys2)
         deck3 = Deck()
         deck3.build()
-        deck3.shuffle()
+        deck3.shuffle_deck()
         self.solitary.crypt('DDDD', deck3, is_encrypt=True)
         keys3 = self.solitary.keys
         self.assertNotEqual(keys2, keys3)
         deck4 = Deck()
         deck4.build()
-        deck4.shuffle()
+        deck4.shuffle_deck()
         self.solitary.crypt('OUIP', deck4, is_encrypt=True)
         keys4 = self.solitary.keys
         self.assertNotEqual(keys3, keys4)

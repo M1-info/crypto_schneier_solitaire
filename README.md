@@ -17,10 +17,8 @@ This program have some dependencies, so you need to install them before running 
 ### Commands 🖥️
 
 ```bash
-$ pip install unidecode
-$ pip install art
-$ python3 DecrypterClient.py
-$ python3 EncrypterClient.py
+$ pip install -r requirements.txt
+$ python crypter.py
 ```
 
 ## Description 📝
