@@ -11,7 +11,7 @@ class UIDeck :
         # Create the canvas
         self.canvas = Canvas(parent, width=600, height=600)
 
-        self.shuffle_button = Button(self.canvas, text="Shuffle deck", command=self.shuffle, bg="seashell4", fg="white", width=15, height=2)
+        self.shuffle_button = Button(self.canvas, text="Shuffle deck", command=self.shuffle, bg="seashell4", fg="white", font=("Helvetica", 12))
         self.shuffle_button.grid(row=5, column=13, columnspan=2)
 
         self.cards = self.init_cards()
