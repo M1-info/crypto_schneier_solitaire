@@ -7,7 +7,7 @@ from ui.UISolitary import UISolitary
 
 class Encrypt:
 
-    def __init__(self):
+    def __init__(self, initiateur: bool):
         self.deck = Deck()
         self.deck.build()
 
@@ -25,9 +25,7 @@ class Encrypt:
         title = ttk.Label(container, text="Run Encrypt", font=("Helvetica", 36, "bold"), padding=30).grid(row=1, column=1)
 
         # Create the deck view
-        deck = Deck()
-        deck.build()
-        deck_ui = UIDeck(deck, container)
+        deck_ui = UIDeck(self.deck, container)
         deck_ui.canvas.grid(row=2, column=1, pady=30)
 
         # Create the solitary view
