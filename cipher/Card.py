@@ -30,7 +30,6 @@ class Card:
         self.suit = suit
         self.rank = rank
         self.id = id
-        self.picture = None
     
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__)
