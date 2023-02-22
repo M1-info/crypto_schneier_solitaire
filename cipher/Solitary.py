@@ -78,8 +78,7 @@ class Solitary:
         n_first_cards = deck.get_sub_deck(0, num_last_card)
 
         # recreate the deck with the first n cards at the end of the deck (except the last card)
-        deck.cards = deck.get_sub_deck(
-            num_last_card, -1) + n_first_cards + [deck.cards[-1]]
+        deck.cards = deck.get_sub_deck(num_last_card, -1) + n_first_cards + [deck.cards[-1]]
 
         # ##################
         # ##### STEP 5 #####

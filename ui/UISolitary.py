@@ -18,18 +18,20 @@ MAX_DATA_SIZE = 4000
 
 class UISolitary:
 
-    client: socket.socket
+    client_socket: socket.socket
     thread: threading.Thread
 
     window: tk.Tk
     create_deck_button: ttk.Button
     validate_deck_button: ttk.Button
     is_creator: bool = False
+    want_to_close: bool = False
 
     def __init__(self):
 
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client.connect(ADDRESS)
+        # self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # self.client.connect(ADDRESS)
+        # self.client.setblocking(False)
 
         # Create the main window
         self.window = tk.Tk()
@@ -48,10 +50,11 @@ class UISolitary:
         self.create_deck_button = ttk.Button(self.container, text="Commencer un echange", command=self.on_initiate)
         self.create_deck_button.grid(row=1, column=0)
 
-        self.thread = threading.Thread(target=self.listen_to_receive_deck)
-        self.thread.start()
+        # thread = threading.Thread(target=self.listen_to_receive_deck)
+        # self.threads.append(thread)
+        # thread.start()
 
-        self.window.mainloop()
+        self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     def on_initiate(self):
 
@@ -73,17 +76,66 @@ class UISolitary:
         message = json.dumps(self.deck_ui.deck.serialize()).encode(FORMAT)
         self.client.send(message)
 
+        # thread = threading.Thread(target=self.listen_to_receive_message)
+        # self.threads.append(thread)
+        # thread.start()
+
+        self.thread = threading.Thread(target=self.listen_to_receive_message)
+        self.thread.start()
+
     def listen_to_receive_deck(self):
         while True:
-            if self.is_creator:
+            print("Waiting for deck")
+            if self.is_creator or self.want_to_close:
                 break
-            data = self.client.recv(MAX_DATA_SIZE)
-            if data:
-                self.deck_ui = UIDeck(Deck.deserialize(json.loads(data.decode(FORMAT))).cards.copy())
-                self.deck_ui.canvas = tk.Canvas(self.container, width=100, height=600)
-                self.deck_ui.canvas.grid(row=1, column=0, pady=30)
-                self.deck_ui.draw(is_creator=False)
-                break
+            try:
+                data = self.client.recv(MAX_DATA_SIZE)
+                if data:
+                    self.deck_ui = UIDeck(Deck.deserialize(json.loads(data.decode(FORMAT))).cards.copy())
+                    self.deck_ui.canvas = tk.Canvas(self.container, width=100, height=600)
+                    self.deck_ui.canvas.grid(row=1, column=0, pady=30)
+                    self.deck_ui.draw(is_creator=False)
 
-        self.client.close()
+                    self.thread = threading.Thread(target=self.listen_to_receive_message)
+                    self.thread.start()
+
+                    break
+            except BlockingIOError:
+                continue
         
+    def listen_to_receive_message(self):
+        self.draw_message_box()
+        while True:
+            if self.want_to_close:
+                break
+            try:
+                data = self.client.recv(MAX_DATA_SIZE)
+                if data:
+                    print(data.decode(FORMAT))
+                    self.received_messages_box.insert(tk.END, data.decode(FORMAT))
+            except BlockingIOError:
+                continue
+
+
+    def draw_message_box(self):
+        # Create the button to send the message
+        self.send_message_button = ttk.Button(self.container, text="Envoyer le message", command=self.send_message)
+        self.send_message_button.grid(row=5, column=0)
+
+        # Create the input text to enter the message
+        self.message_input = ttk.Entry(self.container, width=100)
+        self.message_input.grid(row=5, column=1)
+
+        self.received_messages_box = tk.Text(self.container, width=100, height=10)
+        self.received_messages_box.grid(row=6, column=0, columnspan=2)
+
+    def send_message(self):
+        message = self.message_input.get().encode(FORMAT)
+        self.client.send(message)
+
+    def on_closing(self):
+        self.want_to_close = True
+        if hasattr(self, "thread"):
+            self.thread.join()
+        self.client.close()
+        self.window.destroy()
