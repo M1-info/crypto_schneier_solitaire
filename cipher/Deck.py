@@ -1,8 +1,8 @@
 from random import shuffle
 from itertools import product
-from unidecode import unidecode
 
 from .Card import Card, CardSuit, CardValue
+
 
 class Deck:
     def __init__(self, cards=None):
@@ -74,7 +74,6 @@ class Deck:
     # switch two sub deck of cards
     # first_index: index of the first card (the first card of the first sub deck)
     # second_index: index of the second card (the last card of the second sub deck)
-
     def switch_sub_deck(self, first_index: int, second_index: int) -> None:
         first_cards = self.cards[:first_index]
         last_cards = self.cards[second_index + 1:]
@@ -90,7 +89,7 @@ class Deck:
         return {
             "cards": [card.toJSON() for card in self.cards]
         }
-    
+
     @classmethod
     def deserialize(self, data) -> 'Deck':
         self.cards = [Card.fromJSON(card) for card in data["cards"]]

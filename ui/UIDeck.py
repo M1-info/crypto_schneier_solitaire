@@ -32,6 +32,8 @@ class UIDeck :
 
             column += 1
 
+    # draw the deck
+    # if is_creator is True, the deck is drawn with a shuffle button
     def draw(self, is_creator: bool = True):
         if is_creator:
             texte = "Voici le jeu de cartes qui va servir à chiffrer le message. Nous vous conseillons de le mélanger à l'aide du bouton 'Mélanger' ci-dessous."

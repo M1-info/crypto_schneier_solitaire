@@ -18,18 +18,20 @@ class UICard:
         self.image_normal = Image.open(fp=links[0])
         self.image_normal = self.resize_image(self.image_normal)
 
-
+        # Create the hover image
         self.image_hover = Image.open(fp=links[1])
         self.image_hover = self.resize_image(self.image_hover)
 
+        # Create the tk images
         self.tk_image_normal = ImageTk.PhotoImage(self.image_normal)
         self.tk_image_hover = ImageTk.PhotoImage(self.image_hover)
 
+        # Create the object image and bind the events
         self.object_image = self.canvas.create_image(2, 2, image=self.tk_image_normal, anchor="nw")
         self.canvas.bind("<Enter>", self.on_enter)
         self.canvas.bind("<Leave>", self.on_leave)
 
-
+    # Get the card links to the images
     def get_card_links(self):
         folder = "./assets/images/" + str(self.card.suit).lower()
         return [
@@ -37,6 +39,7 @@ class UICard:
             folder + "/" + self.card.suit  + "-" + str(self.card.rank) + "-hover.png"
         ]
 
+    # Resize the image to the size of the card
     def resize_image(self, image: Image):
         return image.resize(IMAGE_SIZE, Image.ANTIALIAS)
 

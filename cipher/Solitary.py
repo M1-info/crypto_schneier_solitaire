@@ -49,8 +49,7 @@ class Solitary:
         elif index_red_joker == len(deck.cards) - 1:
             red_joker = deck.cards.pop()
             sub_deck = deck.get_sub_deck(2, len(deck.cards))
-            deck.cards = [deck.cards[0]] + \
-                [deck.cards[1]] + [red_joker] + sub_deck
+            deck.cards = [deck.cards[0]] + [deck.cards[1]] + [red_joker] + sub_deck
         else:
             # go back two times
             deck.switch_cards(index_red_joker, index_red_joker + 1)
@@ -95,7 +94,9 @@ class Solitary:
         char = chr(value_card + 65)
 
         return char
-    
+
+    # remove specials characters and accents
+    # return the message, the spaces positions and the upper case positions
     def parse_message(self, message: str) -> list:
         parsed_message = message
 
@@ -108,11 +109,12 @@ class Solitary:
         parsed_message = parsed_message.upper()
         return [parsed_message, spaces, is_upper]
 
+    # encrypt or decrypt a message with the given deck
     def crypt(self, message: str, deck: Deck, is_encrypt: bool = True) -> str:
         [message, spaces, uppers] = self.parse_message(message)
 
         self.generate_keys(len(message), deck)
-        
+
         crypted_msg = ''
         for (x, y) in zip(message, self.keys):
             int_msg = (ord(x) - 65) + 1  # +1 because A start from 1 and not 0

@@ -1,5 +1,6 @@
 import json
 
+
 class CardSuit:
     SPADES = "Spades"
     CLUBS = "Clubs"
@@ -25,15 +26,16 @@ class CardValue:
     QUEEN = 12
     KING = 13
 
+
 class Card:
     def __init__(self, suit: CardSuit, rank: CardValue, id: int):
         self.suit = suit
         self.rank = rank
         self.id = id
-    
+
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__)
-    
+
     @staticmethod
     def fromJSON(string: str):
         return json.loads(string, object_hook=lambda d: Card(d['suit'], d['rank'], d['id']))
