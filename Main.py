@@ -6,9 +6,9 @@ from ui.UISolitary import UISolitary
 
 HOST = socket.gethostbyname(socket.gethostname())
 PORT = 65432
-FORMAT = "utf-8"
 ADDRESS = (HOST, PORT)
 MAX_DATA_SIZE = 4000
+FORMAT = "utf-8"
 
 class App:
 
@@ -33,12 +33,12 @@ class App:
         except Exception as e:
             pass
 
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client.connect(ADDRESS)
-        self.client.setblocking(False)
-        self.selector.register(self.client, selectors.EVENT_READ, self.on_message)
+        # self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # self.client.connect(ADDRESS)
+        # self.client.setblocking(False)
+        # self.selector.register(self.client, selectors.EVENT_READ, self.on_message)
 
-        self.interface = UISolitary(self.client)
+        self.interface = UISolitary()
         self.interface.window.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     def on_client(self, sock: socket.socket, mask: selectors.EVENT_READ):
@@ -50,12 +50,9 @@ class App:
     def on_message(self, conn: socket.socket, mask: selectors.EVENT_READ):
         data = conn.recv(MAX_DATA_SIZE)
         if data:
-            for client in self.clients:
-                if client[0] != conn:
-                    client[0].send(data)
-        # else:
-        #     self.selector.unregister(conn)
-        #     conn.close()
+            clients = list(filter(lambda client: client[0] != conn, self.clients))
+            for client in clients:
+                client[0].send(data)
 
     def on_closing(self):
         self.interface.on_closing()
