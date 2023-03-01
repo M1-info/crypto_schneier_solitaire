@@ -9,6 +9,7 @@ PORT = 65432
 ADDRESS = (HOST, PORT)
 MAX_DATA_SIZE = 4000
 FORMAT = "utf-8"
+DISCONNECT_MESSAGE = "!DISCONNECT"
 
 class App:
 
@@ -48,6 +49,7 @@ class App:
     def on_message(self, conn: socket.socket, mask: selectors.EVENT_READ):
         data = conn.recv(MAX_DATA_SIZE)
         if data:
+
             clients = list(filter(lambda client: client[0] != conn, self.clients))
             for client in clients:
                 client[0].send(data)
@@ -64,6 +66,7 @@ class App:
 
         if hasattr(self, "thread"):
             self.thread.join()
+            self.selector.unregister(self.server)
             self.server.close()
             self.selector.close()
 
@@ -71,7 +74,7 @@ class App:
 
     def run(self):
         while not self.close_app:
-            events = self.selector.select()
+            events = self.selector.select(timeout=0)
             for key, mask in events:
                 callback = key.data
                 callback(key.fileobj, mask)

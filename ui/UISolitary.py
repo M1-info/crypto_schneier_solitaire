@@ -67,7 +67,10 @@ class UISolitary:
         self.draw_message_box()
 
     def on_receive_message(self, conn: socket.socket, mask: selectors.EVENT_READ):
-        data = json.loads(conn.recv(MAX_DATA_SIZE).decode())
+        try : 
+            data = json.loads(conn.recv(MAX_DATA_SIZE).decode())
+        except json.decoder.JSONDecodeError:
+            return
         if data["type"] == "deck":
             self.on_receive_deck(data["deck"])
         elif data["type"] == "message":
@@ -94,12 +97,13 @@ class UISolitary:
 
     def run(self):
         while not self.close_app:
-            events = self.selector.select()
+            events = self.selector.select(timeout=0)
             for key, mask in events:
                 callback = key.data
                 callback(key.fileobj, mask)
 
     def on_closing(self):
         self.thread.join()
+        self.selector.unregister(self.socket)
         self.socket.close()
         self.selector.close()

@@ -100,11 +100,12 @@ class Solitary:
     def parse_message(self, message: str) -> list:
         parsed_message = message
 
+        parsed_message = ''.join([c for c in parsed_message if c.isalpha()])
+        
         # get spaces and upper case positions
         spaces = [i for i, c in enumerate(parsed_message) if c == ' ']
         is_upper = [c.isupper() for c in parsed_message]
 
-        parsed_message = ''.join([c for c in parsed_message if c.isalpha()])
         parsed_message = unidecode(parsed_message)
         parsed_message = parsed_message.upper()
         return [parsed_message, spaces, is_upper]
