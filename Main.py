@@ -20,6 +20,8 @@ class App:
     clients: list[tuple[socket.socket, tuple]] = []
     interface: UISolitary
 
+    close_app: bool = False
+
     def __init__(self):
         self.selector = selectors.DefaultSelector()
         try:
@@ -33,13 +35,9 @@ class App:
         except Exception as e:
             pass
 
-        # self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # self.client.connect(ADDRESS)
-        # self.client.setblocking(False)
-        # self.selector.register(self.client, selectors.EVENT_READ, self.on_message)
-
         self.interface = UISolitary()
         self.interface.window.protocol("WM_DELETE_WINDOW", self.on_closing)
+        self.interface.window.mainloop()
 
     def on_client(self, sock: socket.socket, mask: selectors.EVENT_READ):
         conn, addr = sock.accept()
@@ -55,19 +53,24 @@ class App:
                 client[0].send(data)
 
     def on_closing(self):
+        self.interface.close_app = True
+        self.close_app = True
         self.interface.on_closing()
 
         for client in self.clients:
             client[0].close()
 
         self.clients.clear()
-        self.thread.join()
-        self.server.close()
-        self.selector.close()
+
+        if hasattr(self, "thread"):
+            self.thread.join()
+            self.server.close()
+            self.selector.close()
+
         self.interface.window.destroy()
 
     def run(self):
-        while True:
+        while not self.close_app:
             events = self.selector.select()
             for key, mask in events:
                 callback = key.data

@@ -18,10 +18,13 @@ FORMAT = "utf-8"
 
 class UISolitary:
     def __init__(self):
+
+        self.close_app: bool = False
+
+        self.selector = selectors.DefaultSelector()
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect(ADDRESS)
         self.socket.setblocking(False)
-        self.selector = selectors.DefaultSelector()
         self.selector.register(self.socket, selectors.EVENT_READ, self.on_receive_message)
         self.thread = threading.Thread(target=self.run)
         self.thread.start()
@@ -40,8 +43,6 @@ class UISolitary:
 
         self.create_deck_button = ttk.Button(self.container, text="Créer un jeu de cartes", command=self.on_build_deck)
         self.create_deck_button.grid(row=1, column=0, columnspan=2)
-
-        self.window.mainloop()
 
     def on_build_deck(self):
         self.create_deck_button.grid_forget()
@@ -71,7 +72,7 @@ class UISolitary:
             self.on_receive_deck(data["deck"])
         elif data["type"] == "message":
             message = self.cipher.crypt(data["message"], self.ui_deck.deck, is_encrypt=False)
-            self.received_messages_box.insert(tk.END, message + '\n')
+            self.received_messages_box.insert("1.0", message + '\n')
 
     def on_send_message(self):
         message = self.message_input.get()
@@ -92,7 +93,7 @@ class UISolitary:
         self.received_messages_box.grid(row=4, column=0, columnspan=2)
 
     def run(self):
-        while True:
+        while not self.close_app:
             events = self.selector.select()
             for key, mask in events:
                 callback = key.data
@@ -102,4 +103,3 @@ class UISolitary:
         self.thread.join()
         self.socket.close()
         self.selector.close()
-        self.window.destroy()
