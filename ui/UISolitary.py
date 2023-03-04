@@ -2,6 +2,7 @@ import json
 import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.scrolledtext as scrolledtext
+import tkinter.messagebox as messagebox
 import socket
 import selectors
 import threading
@@ -33,13 +34,13 @@ class UISolitary:
 
         self.window = tk.Tk()
         self.window.title("Chiffrement Solitaire")
-        self.window.geometry("900x550")
+        self.window.geometry("750x600")
 
-        self.container = ttk.Frame(self.window, padding=30)
+        self.container = ttk.Frame(self.window, padding=20)
         self.container.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
-        font = ("Helvetica", 36, "bold")
-        ttk.Label(self.container, text="Chiffrement solitaire", font=font, padding=30).grid(row=0, column=0, columnspan=2)
+        font = ("Helvetica", 26, "bold")
+        ttk.Label(self.container, text="Chiffrement solitaire", font=font, padding=20).grid(row=0, column=0, columnspan=2)
 
         self.create_deck_button = ttk.Button(self.container, text="Créer un jeu de cartes", command=self.on_build_deck)
         self.create_deck_button.grid(row=1, column=0, columnspan=2)
@@ -51,20 +52,35 @@ class UISolitary:
         self.ui_deck.canvas.grid(row=2, column=0, columnspan=2)
         self.ui_deck.draw(is_creator=True)
         self.validate_deck_button = ttk.Button(self.container, text="Valider le jeu de cartes", command=self.on_validate_deck)
-        self.validate_deck_button.grid(row=3, column=0, columnspan=2)
+        self.validate_deck_button.grid(row=3, column=0, columnspan=2, pady=10)
 
     def on_validate_deck(self):
         self.validate_deck_button.grid_forget()
         self.socket.send(json.dumps({"type": "deck", "deck": self.ui_deck.deck.serialize()}).encode())
         self.draw_message_box()
+        self.ui_deck.shuffle_button.grid_forget()
+        self.ui_deck.draw_label.config(text="Jeu de cartes utilisé pour le chiffrement Solitaire.")
+
+        # Create the button to toggle the deck frame
+        self.toggle_deck_button = ttk.Button(self.container, text="Masquer le jeu de cartes", command=self.toggleDeckFrame)
+        self.toggle_deck_button.grid(row=1, column=0, columnspan=2, pady=5)
 
     def on_receive_deck(self, deck: bytes):
+        messagebox.showinfo("Jeu de cartes", "Votre communicant vous a envoyé un jeu de cartes permettant de chiffrer le message.")
         self.create_deck_button.grid_forget()
         self.ui_deck = UIDeck(Deck.deserialize(deck).cards.copy())
         self.ui_deck.canvas = ttk.Frame(self.container)
         self.ui_deck.canvas.grid(row=2, column=0, columnspan=2)
         self.ui_deck.draw(is_creator=False)
         self.draw_message_box()
+        self.ui_deck.draw_label.config(text="Jeu de cartes utilisé pour le chiffrement Solitaire.")
+
+        # Create the button to toggle the deck frame
+        self.toggle_deck_button = ttk.Button(self.container, text="Masquer le jeu de cartes", command=self.toggleDeckFrame)
+        self.toggle_deck_button.grid(row=1, column=0, columnspan=2, pady=5)
+
+        
+        
 
     def on_receive_message(self, conn: socket.socket, mask: selectors.EVENT_READ):
         try : 
@@ -76,24 +92,37 @@ class UISolitary:
         elif data["type"] == "message":
             message = self.cipher.crypt(data["message"], self.ui_deck.deck, is_encrypt=False)
             self.received_messages_box.insert("1.0", message + '\n')
+            self.ui_deck.redraw()
+
 
     def on_send_message(self):
         message = self.message_input.get()
         message = self.cipher.crypt(message, self.ui_deck.deck, is_encrypt=True)
         self.socket.send(json.dumps({"type": "message", "message": message}).encode())
         self.message_input.delete(0, tk.END)
+        self.ui_deck.redraw()
 
     def draw_message_box(self):
         # Create the button to send the message
         self.send_message_button = ttk.Button(self.container, text="Envoyer le message", command=self.on_send_message)
-        self.send_message_button.grid(row=3, column=1)
+        self.send_message_button.grid(row=3, column=1, pady=3)
 
         # Create the input text to enter the message
-        self.message_input = ttk.Entry(self.container, width=100)
+        self.message_input = ttk.Entry(self.container, width=87)
         self.message_input.grid(row=3, column=0)
 
-        self.received_messages_box = scrolledtext.ScrolledText(self.container, width=100, height=10)
+        self.received_messages_box = scrolledtext.ScrolledText(self.container, width=80, height=8)
         self.received_messages_box.grid(row=4, column=0, columnspan=2)
+
+    def toggleDeckFrame(self):
+        if self.toggle_deck_button:
+            self.ui_deck.canvas.grid_remove()
+            self.toggle_deck_button.config(text="Afficher le jeu de cartes")
+            self.toggle_deck_button = None
+        else:
+            self.ui_deck.canvas.grid()
+            self.toggle_deck_button = ttk.Button(self.container, text="Masquer le jeu de cartes", command=self.toggleDeckFrame)
+            self.toggle_deck_button.grid(row=1, column=0, columnspan=2, pady=5)
 
     def run(self):
         while not self.close_app:

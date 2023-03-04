@@ -35,15 +35,14 @@ class UIDeck :
     # draw the deck
     # if is_creator is True, the deck is drawn with a shuffle button
     def draw(self, is_creator: bool = True):
-        if is_creator:
-            texte = "Voici le jeu de cartes qui va servir à chiffrer le message. Nous vous conseillons de le mélanger à l'aide du bouton 'Mélanger' ci-dessous."
-        else:
-            texte = "Voici le jeu de cartes qui vous a été envoyé et qui va servir à chiffrer le message."
-        ttk.Label(self.canvas, text=texte, font=("Helvetica", 10)).grid(row=1, column=0, columnspan=14)
+        texte ="Jeu de cartes utilisé pour le chiffrement Solitaire. Nous vous conseillons de le mélanger."
+        self.draw_label = ttk.Label(self.canvas, text = texte, font=("Helvetica", 10))
+        self.draw_label.grid(row=1, column=0, columnspan=14)
         self.draw_cards()
 
         if is_creator:
-            ttk.Button(self.canvas, text="Mélanger", command=self.shuffle).grid(row=5, column=13, columnspan=2)
+            self.shuffle_button = ttk.Button(self.canvas, text="Mélanger", command=self.shuffle)
+            self.shuffle_button.grid(row=5, column=13, columnspan=2)
 
     def shuffle(self):
         self.deck.shuffle_deck()
