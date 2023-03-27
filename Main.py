@@ -8,8 +8,6 @@ HOST = socket.gethostbyname(socket.gethostname())
 PORT = 65432
 ADDRESS = (HOST, PORT)
 MAX_DATA_SIZE = 4000
-FORMAT = "utf-8"
-DISCONNECT_MESSAGE = "!DISCONNECT"
 
 class App:
 
@@ -49,7 +47,6 @@ class App:
     def on_message(self, conn: socket.socket, mask: selectors.EVENT_READ):
         data = conn.recv(MAX_DATA_SIZE)
         if data:
-
             clients = list(filter(lambda client: client[0] != conn, self.clients))
             for client in clients:
                 client[0].send(data)
@@ -57,11 +54,11 @@ class App:
     def on_closing(self):
         self.interface.close_app = True
         self.close_app = True
+
         self.interface.on_closing()
 
         for client in self.clients:
             client[0].close()
-
         self.clients.clear()
 
         if hasattr(self, "thread"):

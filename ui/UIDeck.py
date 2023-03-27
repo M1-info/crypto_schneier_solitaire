@@ -19,7 +19,7 @@ class UIDeck :
 
     def draw_cards(self):
         self.cards = []
-        row = 2
+        row = 1
         column = 1
         for card in self.deck.cards:
             ui_card = UICard(card, parent=self.canvas)
@@ -33,16 +33,12 @@ class UIDeck :
             column += 1
 
     # draw the deck
-    # if is_creator is True, the deck is drawn with a shuffle button
-    def draw(self, is_creator: bool = True):
-        texte ="Jeu de cartes utilisé pour le chiffrement Solitaire. Nous vous conseillons de le mélanger."
-        self.draw_label = ttk.Label(self.canvas, text = texte, font=("Helvetica", 10))
-        self.draw_label.grid(row=1, column=0, columnspan=14)
+    def draw(self):
+        text ="Jeu de cartes utilisé pour le chiffrement Solitaire. Nous vous conseillons de le mélanger."
+        self.draw_label = ttk.Label(self.canvas, text = text, font="Helvetica 10", foreground="black", background="#f0f0f0")
+        self.draw_label.grid(row=0, column=0, columnspan=12, pady=10)
         self.draw_cards()
 
-        if is_creator:
-            self.shuffle_button = ttk.Button(self.canvas, text="Mélanger", command=self.shuffle)
-            self.shuffle_button.grid(row=5, column=13, columnspan=2)
 
     def shuffle(self):
         self.deck.shuffle_deck()
