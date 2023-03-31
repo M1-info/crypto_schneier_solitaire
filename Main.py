@@ -48,8 +48,6 @@ class App:
     def on_message(self, conn: socket.socket, mask: selectors.EVENT_READ):
         data = conn.recv(MAX_DATA_SIZE)
         if data:
-            data = json.loads(conn.recv(MAX_DATA_SIZE).decode())
-            
             clients = list(filter(lambda client: client[0] != conn, self.clients))
             for client in clients:
                 client[0].send(data)
