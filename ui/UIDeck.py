@@ -35,8 +35,8 @@ class UIDeck :
     # draw the deck
     def draw(self):
         text ="Jeu de cartes utilisé pour le chiffrement Solitaire. Nous vous conseillons de le mélanger."
-        self.draw_label = ttk.Label(self.canvas, text = text, font="Helvetica 10", foreground="black", background="#f0f0f0")
-        self.draw_label.grid(row=0, column=0, columnspan=12, pady=10)
+        self.draw_label = ttk.Label(self.canvas, text = text, font="Helvetica 10", foreground="black", background="#ffffff")
+        self.draw_label.grid(row=0, column=0, columnspan=12, pady=15)
         self.draw_cards()
 
 

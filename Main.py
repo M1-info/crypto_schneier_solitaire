@@ -1,6 +1,7 @@
 import socket
 import selectors
 import threading
+import json
 
 from ui.UISolitary import UISolitary
 
@@ -43,10 +44,12 @@ class App:
         conn.setblocking(False)
         self.clients.append((conn, addr))
         self.selector.register(conn, selectors.EVENT_READ, self.on_message)
-
+    
     def on_message(self, conn: socket.socket, mask: selectors.EVENT_READ):
         data = conn.recv(MAX_DATA_SIZE)
         if data:
+            data = json.loads(conn.recv(MAX_DATA_SIZE).decode())
+            
             clients = list(filter(lambda client: client[0] != conn, self.clients))
             for client in clients:
                 client[0].send(data)
@@ -55,7 +58,7 @@ class App:
         self.interface.close_app = True
         self.close_app = True
 
-        self.interface.on_closing()
+        self.interface.on_close()
 
         for client in self.clients:
             client[0].close()
