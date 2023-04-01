@@ -58,6 +58,7 @@ class UISolitary :
     def __init__(self) :
         self.init_socket()
         self.init_window()
+        self.init_icons()
         self.init_styles()
         self.init_home_page()
 
@@ -113,6 +114,27 @@ class UISolitary :
 
         style.configure("TFrame", background=SECONDARY_COLOR)
         style.configure("Secondary.TFrame", background=MAIN_COLOR)
+
+    def init_icons(self):
+        send_icon = Image.open("assets/images/send.png")
+        send_icon = send_icon.resize((32, 32), Image.ANTIALIAS)
+        self.send_deck_icon = ImageTk.PhotoImage(send_icon)
+
+        shuffle_icon = Image.open("assets/images/shuffle.png")
+        shuffle_icon = shuffle_icon.resize((32, 32), Image.ANTIALIAS)
+        self.shuffle_deck_icon = ImageTk.PhotoImage(shuffle_icon)
+
+        hide_icon = Image.open("assets/images/hide.png")
+        hide_icon = hide_icon.resize((32, 32), Image.ANTIALIAS)
+        self.hide_deck_icon = ImageTk.PhotoImage(hide_icon)
+
+        import_icon = Image.open("assets/images/import.png")
+        import_icon = import_icon.resize((32, 32), Image.ANTIALIAS)
+        self.import_file_icon = ImageTk.PhotoImage(import_icon)
+
+        show_icon = Image.open("assets/images/show.png")
+        show_icon = show_icon.resize((32, 32), Image.ANTIALIAS)
+        self.show_deck_icon = ImageTk.PhotoImage(show_icon)
         
 
     def init_home_page(self) :
@@ -145,10 +167,6 @@ class UISolitary :
         self.buttons_container = ttk.Frame(self.window, padding=30)
         self.buttons_container.pack(fill="both", side="bottom", anchor="center")
 
-        shuffle_icon = Image.open("assets/images/shuffle.png")
-        shuffle_icon = shuffle_icon.resize((32, 32), Image.ANTIALIAS)
-        self.shuffle_deck_icon = ImageTk.PhotoImage(shuffle_icon)
-
         self.shuffle_button = ttk.Button(self.buttons_container,
                                         text="Mélanger le jeu de cartes",
                                         command=self.
@@ -160,9 +178,6 @@ class UISolitary :
                                         style="Small.Main.TButton")
         self.shuffle_button.pack(side="left", anchor="center")
 
-        send_icon = Image.open("assets/images/send.png")
-        send_icon = send_icon.resize((32, 32), Image.ANTIALIAS)
-        self.send_deck_icon = ImageTk.PhotoImage(send_icon)
         self.send_deck_button = ttk.Button(self.buttons_container,
                                         text="Envoyer le jeu de cartes",
                                         command=self.send_deck,
@@ -175,17 +190,13 @@ class UISolitary :
 
     def init_messages_page(self) :
 
+        if hasattr(self, "buttons_container"):
+            self.buttons_container.pack_forget()
+
         self.ui_deck.draw_label.config(
             text="Jeu de cartes utilisé pour le chiffrement Solitaire.")
         self.ui_deck.draw_label.grid(row=0, column=0, columnspan=7, pady=15)
 
-        show_icon = Image.open("assets/images/show.png")
-        show_icon = show_icon.resize((32, 32), Image.ANTIALIAS)
-        self.show_deck_icon = ImageTk.PhotoImage(show_icon)
-
-        hide_icon = Image.open("assets/images/hide.png")
-        hide_icon = hide_icon.resize((32, 32), Image.ANTIALIAS)
-        self.hide_deck_icon = ImageTk.PhotoImage(hide_icon)
         self.toggle_deck_button_container = ttk.Frame(self.window, padding=10)
         self.toggle_deck_button_container.pack(side="top", fill="x", anchor="center", before=self.ui_deck.canvas)
         self.toggle_deck_button = ttk.Button(self.toggle_deck_button_container, 
@@ -211,7 +222,6 @@ class UISolitary :
         self.message_input = ttk.Entry(self.message_input_container, width=70)
         self.message_input.grid(row=1, column=0, sticky="w", padx=(0, 10))
         self.message_input_button = ttk.Button(self.message_input_container, 
-                                            #    text="Envoyer", 
                                                command=self.send_message, 
                                                cursor="hand2",
                                                style="Small.Secondary.TButton",
@@ -220,11 +230,7 @@ class UISolitary :
                                                compound="center")
         self.message_input_button.grid(row=1, column=1, sticky="w")
 
-        import_icon = Image.open("assets/images/import.png")
-        import_icon = import_icon.resize((32, 32), Image.ANTIALIAS)
-        self.import_file_icon = ImageTk.PhotoImage(import_icon)
         self.import_message_button = ttk.Button(self.message_input_container,
-                                                # text="Importer un fichier",
                                                 command=self.import_message,
                                                 padding=10,
                                                 cursor="hand2",
@@ -233,7 +239,7 @@ class UISolitary :
                                                 compound="center")
         self.import_message_button.grid(row=1, column=2, sticky="w", padx=10)
 
-        self.messages_containers = ttk.Frame(self.messages_box, padding=10)
+        self.messages_containers = ttk.Frame(self.messages_box, padding=10, style="Secondary.TFrame")
         self.messages_containers.grid(row=1, column=0, sticky="nsew")
 
         self.encrypted_message_container = ttk.Frame(self.messages_containers)
@@ -241,7 +247,7 @@ class UISolitary :
 
         self.encrypted_message_box_label = ttk.Label(self.encrypted_message_container, text="Message chiffré :", style="Red.TLabel")
         self.encrypted_message_box_label.pack(side="top", anchor="w", fill="x")
-        self.encrypted_message_box = scrolledtext.ScrolledText(self.encrypted_message_container, width=37, height=20)
+        self.encrypted_message_box = scrolledtext.ScrolledText(self.encrypted_message_container, width=37, height=10)
         self.encrypted_message_box.pack(fill="both")
 
         self.decrypted_message_container = ttk.Frame(self.messages_containers)
@@ -249,8 +255,10 @@ class UISolitary :
 
         self.decrypted_message_box_label = ttk.Label(self.decrypted_message_container, text="Message déchiffré :", style="Red.TLabel")
         self.decrypted_message_box_label.pack(side="top", anchor="w", fill="x")
-        self.decrypted_message_box = scrolledtext.ScrolledText(self.decrypted_message_container, width=37, height=20)
+        self.decrypted_message_box = scrolledtext.ScrolledText(self.decrypted_message_container, width=37, height=10)
         self.decrypted_message_box.pack(fill="both")
+
+        print(self.window.pack_slaves())
 
 
     def send_deck(self):
@@ -267,7 +275,22 @@ class UISolitary :
         if message == "" :
             return
 
+        crypted = self.cipher.crypt(message, self.ui_deck.deck, is_encrypt=True)
+        self.sock.send(json.dumps({"type": "message", "message": crypted}).encode())
+        self.ui_deck.redraw()
         self.message_input.delete(0, "end")
+        self.ui_deck.redraw()
+        self.encrypted_message_box.config(state="normal")
+        self.encrypted_message_box.insert("1.0", 'Envoyé -> ' + crypted + '\n', "send")
+        self.encrypted_message_box.config(state="disabled")
+
+        self.decrypted_message_box.config(state="normal")
+        self.decrypted_message_box.insert("1.0", 'Envoyé -> ' + message + '\n', "send")
+        self.decrypted_message_box.config(state="disabled")
+
+        self.encrypted_message_box.tag_config("send", foreground="green")
+        self.decrypted_message_box.tag_config("send", foreground="green")
+
 
     def import_message(self) :
         file = filedialog.askopenfilename(initialdir = "../messages/",title = "Select file",filetypes = [("Text Files","*.txt")])
@@ -286,12 +309,28 @@ class UISolitary :
         
         if data["type"] == "deck" :
             self.on_deck_received(data["deck"])
+        elif data["type"] == "message":
+            self.encrypted_message_box.config(state="normal")
+            self.encrypted_message_box.insert("1.0", 'Reçu -> ' + data["message"] + '\n', "received")
+            self.encrypted_message_box.config(state="disabled")
+
+            self.decrypted_message_box.config(state="normal")
+            self.decrypted_message_box.insert("1.0", 'Reçu -> ' + self.cipher.crypt(data["message"], self.ui_deck.deck, is_encrypt=False) + '\n', "received")
+            self.decrypted_message_box.config(state="disabled")
+
+            self.encrypted_message_box.tag_config("received", foreground="red")
+            self.decrypted_message_box.tag_config("received", foreground="red")
+
+            self.ui_deck.redraw()
 
     def on_deck_received(self, deck: list) :
         messagebox.showinfo("Jeu de cartes", "Votre communicant vous a envoyé un jeu de cartes permettant de chiffrer le message.")
         self.can_build_deck = False
         self.build_deck_button.pack_forget()
         self.ui_deck = UIDeck(Deck.deserialize(deck).cards.copy())
+        self.ui_deck.canvas = ttk.Frame(self.window, padding=30)
+        self.ui_deck.draw()
+        self.ui_deck.canvas.pack(fill="both", expand=True)
         self.ui_deck.canvas.pack(fill="both", expand=True)
         self.init_messages_page()
 
