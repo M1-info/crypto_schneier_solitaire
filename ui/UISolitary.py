@@ -258,8 +258,6 @@ class UISolitary :
         self.decrypted_message_box = scrolledtext.ScrolledText(self.decrypted_message_container, width=37, height=10)
         self.decrypted_message_box.pack(fill="both")
 
-        print(self.window.pack_slaves())
-
 
     def send_deck(self):
         messagebox.showinfo("Jeu de cartes", "Vous avez envoyé votre jeu de cartes à votre correspondant.")

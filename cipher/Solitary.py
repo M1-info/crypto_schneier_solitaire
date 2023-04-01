@@ -103,16 +103,19 @@ class Solitary:
         parsed_message = ''.join([c for c in parsed_message if c.isalpha()])
         
         # get spaces and upper case positions
-        spaces = [i for i, c in enumerate(parsed_message) if c == ' ']
-        is_upper = [c.isupper() for c in parsed_message]
+        # spaces = [i for i, c in enumerate(parsed_message) if c == ' ']
+        # is_upper = [c.isupper() for c in parsed_message]
 
         parsed_message = unidecode(parsed_message)
         parsed_message = parsed_message.upper()
-        return [parsed_message, spaces, is_upper]
+        # return [parsed_message, spaces, is_upper]
+        # return [parsed_message, [], []]
+        return parsed_message
 
     # encrypt or decrypt a message with the given deck
     def crypt(self, message: str, deck: Deck, is_encrypt: bool = True) -> str:
-        [message, spaces, uppers] = self.parse_message(message)
+        # [message, spaces, uppers] = self.parse_message(message)
+        message = self.parse_message(message)
 
         self.generate_keys(len(message), deck)
 
@@ -126,8 +129,8 @@ class Solitary:
                 res = int_msg - int_key if int_msg - int_key >= 1 else int_msg - int_key + 26
             crypted_msg += chr(res - 1 + 65)
 
-        for i in spaces:
-            crypted_msg = crypted_msg[:i] + ' ' + crypted_msg[i:]
+        # for i in spaces:
+        #     crypted_msg = crypted_msg[:i] + ' ' + crypted_msg[i:]
 
-        crypted_msg = ''.join([c.upper() if uppers[i] else c.lower() for i, c in enumerate(crypted_msg)])
+        # crypted_msg = ''.join([c.upper() if uppers[i] else c.lower() for i, c in enumerate(crypted_msg)])
         return crypted_msg
