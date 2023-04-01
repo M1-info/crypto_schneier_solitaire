@@ -5,20 +5,21 @@ This is a Python implementation of Bruce Schneier's Solitaire algorithm, as desc
 ## Usage 🚀
 
 This projet work with sockets, so you need to run two programs, one for the crypter and one for the decrypter.
-You can run the programs on the same computer or on two different computers (in this case, you need to change the IP address in the code).
+You can run the programs on the same computer or on two different computers (in this case, you need to change the IP address in the code and open a port to allow the connection).
 This program have some dependencies, so you need to install them before running the program.
 
 ### Dependencies 📦
 
 - [Python 3](https://www.python.org/downloads/)
 - [unidecode](https://pypi.org/project/Unidecode/)
-- [art](https://pypi.org/project/art/)
+- [Tkinter](https://docs.python.org/3/library/tkinter.html)
+- [Pillow](https://pypi.org/project/Pillow/)
 
 ### Commands 🖥️
 
 ```bash
 $ pip install -r requirements.txt
-$ python crypter.py
+$ python Main.py
 ```
 
 ## Description 📝
