@@ -20,6 +20,9 @@ class App:
     clients: list[tuple[socket.socket, tuple]] = []
     interface: UISolitary
 
+    is_someone_building_deck: bool = False
+    is_deck_built: bool = False
+
     close_app: bool = False
 
     def __init__(self):
@@ -44,10 +47,20 @@ class App:
         conn.setblocking(False)
         self.clients.append((conn, addr))
         self.selector.register(conn, selectors.EVENT_READ, self.on_message)
+
+        if not self.is_deck_built :
+            conn.send(json.dumps({"type": "ack" ,"is_someone_building_deck": self.is_someone_building_deck}).encode())
+        else:
+            deck = self.interface.ui_deck.deck.serialize()
+            conn.send(json.dumps({"type": "deck", "deck": deck}).encode())
     
     def on_message(self, conn: socket.socket, mask: selectors.EVENT_READ):
         data = conn.recv(MAX_DATA_SIZE)
         if data:
+            if "building_deck" in data.decode() :
+                self.is_someone_building_deck = True
+            elif "deck" in data.decode() :
+                self.is_deck_built = True
             clients = list(filter(lambda client: client[0] != conn, self.clients))
             for client in clients:
                 client[0].send(data)

@@ -29,6 +29,7 @@ class UISolitary :
 
     close_app = False
     show_deck = True
+    can_build_deck = True
 
     cipher: Solitary = Solitary()
 
@@ -56,8 +57,8 @@ class UISolitary :
     ui_deck: UIDeck
 
     def __init__(self) :
-        self.init_socket()
         self.init_window()
+        self.init_socket()
         self.init_icons()
         self.init_styles()
         self.init_home_page()
@@ -146,18 +147,24 @@ class UISolitary :
                           style="Title.TLabel")
         title.pack(fill="x", side="top")
     
-        self.build_deck_button = ttk.Button(self.window,
-                                            text="Générer un jeu de cartes",
-                                            command=self.init_deck_build_page,
-                                            image=self.window_icon,
-                                            compound="left",
-                                            cursor="hand2",
-                                            padding=10,
-                                            style="Big.Main.TButton")
-        self.build_deck_button.pack(expand=True)
+        if self.can_build_deck :
+            self.build_deck_button = ttk.Button(self.window,
+                                                text="Générer un jeu de cartes",
+                                                command=self.init_deck_build_page,
+                                                image=self.window_icon,
+                                                compound="left",
+                                                cursor="hand2",
+                                                padding=10,
+                                                style="Big.Main.TButton")
+            self.build_deck_button.pack(expand=True)
+        else :
+            self.building_deck_label = ttk.Label(self.window, text="Votre communicant est en train de construire son jeu de cartes.\nMerci de patienter.", style="Red.TLabel", anchor="center")
+            self.building_deck_label.pack(side="bottom", fill="both", expand=True)
 
     def init_deck_build_page(self) :
         self.build_deck_button.pack_forget()
+
+        self.sock.send(json.dumps({"type": "building_deck"}).encode())
 
         self.ui_deck = UIDeck()
         self.ui_deck.canvas = ttk.Frame(self.window, padding=30)
@@ -282,8 +289,12 @@ class UISolitary :
         self.encrypted_message_box.insert("1.0", 'Envoyé -> ' + crypted + '\n', "send")
         self.encrypted_message_box.config(state="disabled")
 
+        # remove special characters
+
+        modified_message = message.upper()
+        modified_message = modified_message.replace(" ", "")
         self.decrypted_message_box.config(state="normal")
-        self.decrypted_message_box.insert("1.0", 'Envoyé -> ' + message + '\n', "send")
+        self.decrypted_message_box.insert("1.0", 'Envoyé -> ' + modified_message + '\n', "send")
         self.decrypted_message_box.config(state="disabled")
 
         self.encrypted_message_box.tag_config("send", foreground="green")
@@ -304,8 +315,12 @@ class UISolitary :
             data = json.loads(connexion.recv(MAX_DATA_SIZE).decode())
         except json.decoder.JSONDecodeError:
             return
-        
-        if data["type"] == "deck" :
+
+        if data["type"] == "ack" :
+            self.can_build_deck = not data["is_someone_building_deck"]
+        elif data["type"] == "building_deck" :
+            self.on_building_deck_received()
+        elif data["type"] == "deck" :
             self.on_deck_received(data["deck"])
         elif data["type"] == "message":
             self.encrypted_message_box.config(state="normal")
@@ -324,13 +339,23 @@ class UISolitary :
     def on_deck_received(self, deck: list) :
         messagebox.showinfo("Jeu de cartes", "Votre communicant vous a envoyé un jeu de cartes permettant de chiffrer le message.")
         self.can_build_deck = False
-        self.build_deck_button.pack_forget()
+        if hasattr(self, "building_deck_label") :
+            self.building_deck_label.pack_forget()
+        else :
+            self.build_deck_button.pack_forget()
         self.ui_deck = UIDeck(Deck.deserialize(deck).cards.copy())
         self.ui_deck.canvas = ttk.Frame(self.window, padding=30)
         self.ui_deck.draw()
         self.ui_deck.canvas.pack(fill="both", expand=True)
         self.ui_deck.canvas.pack(fill="both", expand=True)
         self.init_messages_page()
+
+    def on_building_deck_received(self) :
+        if hasattr(self, "build_deck_button") :
+            self.build_deck_button.pack_forget()
+        if hasattr(self, "window") :
+            self.building_deck_label = ttk.Label(self.window, text="Votre communicant est en train de construire son jeu de cartes.\nMerci de patienter.", style="Red.TLabel", anchor="center")
+            self.building_deck_label.pack(side="bottom", fill="both", expand=True)
 
     def toggle_deck_frame(self) :
         if self.show_deck :
