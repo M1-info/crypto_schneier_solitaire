@@ -8,6 +8,7 @@ import tkinter.scrolledtext as scrolledtext
 import tkinter.messagebox as messagebox
 import tkinter.filedialog as filedialog
 from PIL import ImageTk, Image
+from unidecode import unidecode
 
 from cipher.Solitary import Solitary
 from cipher.Deck import Deck
@@ -292,7 +293,9 @@ class UISolitary :
         # remove special characters
 
         modified_message = message.upper()
-        modified_message = modified_message.replace(" ", "")
+        modified_message = ''.join([c for c in modified_message if c.isalpha()])
+        modified_message = unidecode(modified_message)
+        
         self.decrypted_message_box.config(state="normal")
         self.decrypted_message_box.insert("1.0", 'Envoyé -> ' + modified_message + '\n', "send")
         self.decrypted_message_box.config(state="disabled")
