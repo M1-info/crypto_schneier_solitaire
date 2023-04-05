@@ -190,7 +190,7 @@ class TestSolitary(unittest.TestCase):
     # test if decrypted message is the same as the original message
     def test_encrypt_decrypt_(self):
         message = 'Hello World !'
-        message_wanted = 'Hello World '
+        message_wanted = 'HELLOWORLD'
         encrypted_msg = self.solitary.crypt(
             message, self.encrypt_deck, is_encrypt=True)
         decrypted_msg = self.solitary.crypt(
@@ -200,7 +200,7 @@ class TestSolitary(unittest.TestCase):
     # same test as above but with special characters and space
     def test_encrypt_decrypt_with_special_characters(self):
         message = 'A    BCDEF GHIJKLMN OPQRS TUVWX YZ !@#$%^&*()_+ 1234567890-=[]\{}|;:,./<>?'
-        message_wanted = 'A    BCDEF GHIJKLMN OPQRS TUVWX YZ  '
+        message_wanted = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         encrypted_msg = self.solitary.crypt(
             message, self.encrypt_deck, is_encrypt=True)
         decrypted_msg = self.solitary.crypt(
@@ -210,7 +210,7 @@ class TestSolitary(unittest.TestCase):
     # same test as above but with accents
     def test_encrypt_decrypt_with_accents(self):
         message = 'éèàçù'
-        message_wanted = 'eeacu'
+        message_wanted = 'EEACU'
         encrypted_msg = self.solitary.crypt(
             message, self.encrypt_deck, is_encrypt=True)
         decrypted_msg = self.solitary.crypt(
@@ -221,10 +221,10 @@ class TestSolitary(unittest.TestCase):
 
     def test_cipher(self):
         messages = [
-            ('Bonjour', 'Bonjour'),
-            ('Hello world !', 'Hello world '),
-            ('Comment ça va là ?', 'Comment ca va la '),
-            ('étérogèneité.', 'eterogeneite'),
+            ('Bonjour', 'BONJOUR'),
+            ('Hello world !', 'HELLOWORLD'),
+            ('Comment ça va là ?', 'COMMENTCAVALA'),
+            ('étérogèneité.', 'ETEROGENEITE'),
         ]
         for message, message_wanted in messages:
             encrypted_msg = self.solitary.crypt(
